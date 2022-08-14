@@ -1,0 +1,77 @@
+\documentclass[10pt,xcolor=svgnames]{beamer} %Beamer
+\usepackage{palatino} %font type
+\usefonttheme{metropolis} %Type of slides
+\usefonttheme[onlymath]{serif} %font type Mathematical expressions
+\usetheme[progressbar=frametitle,titleformat frame=smallcaps,numbering=counter]{metropolis} %This adds a bar at the beginning of each section.
+\useoutertheme[subsection=false]{miniframes} %Circles in the top of each frame, showing the slide of each section you are at
+
+\usepackage{appendixnumberbeamer} %enumerate each slide without counting the appendix
+\setbeamercolor{progress bar}{fg=Maroon!70!Coral} %These are the colours of the progress bar. Notice that the names used are the svgnames
+\setbeamercolor{title separator}{fg=DarkSalmon} %This is the line colour in the title slide
+\setbeamercolor{structure}{fg=black} %Colour of the text of structure, numbers, items, blah. Not the big text.
+\setbeamercolor{normal text}{fg=black!87} %Colour of normal text
+\setbeamercolor{alerted text}{fg=DarkRed!60!Gainsboro} %Color of the alert box
+\setbeamercolor{example text}{fg=Maroon!70!Coral} %Colour of the Example block text
+
+
+\setbeamercolor{palette primary}{bg=NavyBlue!50!DarkOliveGreen, fg=white} %These are the colours of the background. Being this the main combination and so one. 
+\setbeamercolor{palette secondary}{bg=NavyBlue!50!DarkOliveGreen, fg=white}
+\setbeamercolor{palette tertiary}{bg=NavyBlue!40!Black, fg= white}
+\setbeamercolor{section in toc}{fg=NavyBlue!40!Black} %Color of the text in the table of contents (toc)
+
+%These next packages are the useful for Physics in general, you can add the extras here. 
+\usepackage{amsmath,amssymb}
+\usepackage{slashed}
+\usepackage{cite}
+\usepackage{relsize}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{multicol}
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+\usepackage{pgfplots}
+\usepgfplotslibrary{dateplot}
+\usepackage{geometry}
+\usepackage{xspace}
+\usepackage{comment}
+\newcommand{\themename}{\textbf{\textsc{bluetemp}\xspace}}%metropolis}}\xspace}
+
+\title{Syntax-Generic Operations, Reflectively Reified}
+\author[Name]{Tzu-Chi Lin and Hsiang-Shang Ko} %With inst, you can change the institution they belong
+\subtitle{Extended Abstract}
+\institute[uni]{Institute of Information Science \\ Academia Sinica}
+\date{\today} %Here you can change the date
+% \titlegraphic{\vspace{-0.5cm}\hfill\includegraphics[scale=0.23]{logo.png}} %You can modify the location of the logo by changing the command \vspace{}. 
+
+\begin{document}
+{
+\setbeamercolor{background canvas}{bg=NavyBlue!50!DarkOliveGreen, fg=white}
+\setbeamercolor{normal text}{fg=white}
+\maketitle
+}%This is the colour of the first slide. bg= background and fg=foreground
+
+\metroset{titleformat frame=smallcaps} %This changes the titles for small caps
+
+\begin{frame}{Outline}
+  \setbeamertemplate{section in toc}[sections numbered] %This is numbering the sections
+  \tableofcontents[hideallsubsections] %You can comment this line if you want to show the subsections in the table of contents
+\end{frame}
+
+\section{Motivation}
+
+\begin{frame}{Motivation}
+	\emph{Intrinsic typing} is a common pattern for dependently typed programmers to define lambda calculus with De Bruijn indices.
+	\metroset{block=fill}
+	\begin{exampleblock}{An example from Wen Kokke et al.}
+		
+	\end{exampleblock}
+\end{frame}
+
+
+\section{Introduction}
+
+\begin{frame}[fragile]{Test}
+\end{frame}
+
+\end{document}
+
