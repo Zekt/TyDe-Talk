@@ -22,14 +22,14 @@
 
 \usepackage[utf8]{inputenc}
 % \usepackage{amsmath,amssymb}
-% \usepackage[Symbol]{upgreek}
+\usepackage[Symbol]{upgreek}
 \usepackage{newtxmath}
 % \usepackage{slashed}
 % \usepackage[capitalise,noabbrev]{cleveref}
 % \usepackage{relsize}
 % \usepackage{caption}
 % \usepackage{subcaption}
-% \usepackage{multicol}
+\usepackage{multicol}
 % \usepackage{booktabs}
 % \usepackage[scale=2]{ccicons}
 % \usepackage{pgfplots}
@@ -52,6 +52,8 @@
 \newcommand{\aha}[2]{\smash{\parbox{\linewidth}{#2}}\phantom{\parbox{\linewidth}{#1}}} % as high as
 \newcommand{\parl}[1]{\parbox{\linewidth}{#1}} % as high as
 
+\newcommand{\mi}[1]{\ensuremath{\mathit{#1}}}
+
 \newunicodechar{→}{\ensuremath{\mathord{\rightarrow}}}
 \newunicodechar{⇒}{\ensuremath{\Rightarrow}}
 \newunicodechar{⊢}{\ensuremath{\vdash}}
@@ -62,10 +64,11 @@
 \newunicodechar{Δ}{\ensuremath{\varDelta}}
 \newunicodechar{∋}{\ensuremath{\ni}}
 \newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{α}{\ensuremath{\alpha}}
 \newunicodechar{ρ}{\ensuremath{\rho}}
 \newunicodechar{σ}{\ensuremath{\sigma}}
 \newunicodechar{τ}{\ensuremath{\tau}}
-\newunicodechar{·}{\ensuremath{\cdotp}}
+\newunicodechar{·}{\ensuremath{\mathord\cdotp}}
 \newunicodechar{₁}{\ensuremath{_1}}
 \newunicodechar{₂}{\ensuremath{_2}}
 \newunicodechar{×}{\ensuremath{\times}}
@@ -76,6 +79,7 @@
 \newunicodechar{‵}{\ensuremath{\mathord{^\backprime}}}
 \newunicodechar{∷}{\ensuremath{::}}
 \newunicodechar{∗}{\ensuremath{\mathord\ast}}
+\newunicodechar{ℓ}{\ensuremath{\ell}}
 
 %% ODER: format ==         = "\mathrel{==}"
 %% ODER: format /=         = "\neq "
@@ -361,7 +365,7 @@
 \section{Introduction}
 
 \begin{frame}[fragile]{Motivation}
-\emph{Intrinsic typing} is a common pattern that dependently typed programmers use to define lambda calculus with De Bruijn indices.
+\emph{Intrinsic typing} is a common pattern that dependently typed programmers use to define $\uplambda$-calculus with De Bruijn indices.
 \metroset{block=fill}
 \begin{exampleblock}{Example 2.}
 	\aha{%
@@ -427,7 +431,7 @@
 \end{frame}
 
 \begin{frame}[fragile]{Motivation}
-\emph{Intrinsic typing} is a common pattern that dependently typed programmers use to define lambda calculus with De Bruijn indices.
+\emph{Intrinsic typing} is a common pattern that dependently typed programmers use to define $\uplambda$-calculus with De Bruijn indices.
 \metroset{block=fill}
 \begin{exampleblock}{Example 2.}
 	\parl{
@@ -538,7 +542,7 @@ Programmers may change/extend the object language they are interested in:
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{9}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{11}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{13}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[B]{}\mathbf{data}\;\Varid{\char95 ⊢\char95 }\;\mathbin{:}\;\Conid{Context}\;\Varid{→}\;\Conid{Type}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
 \\
@@ -546,32 +550,32 @@ Programmers may change/extend the object language they are interested in:
 \>[9]{}\Varid{...}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{con}\;{}\<[11]%
-\>[11]{}\mathbin{:}\;\Conid{ℕ}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{Nat}{}\<[E]%
+\>[3]{}\Varid{con}\;{}\<[13]%
+\>[13]{}\mathbin{:}\;\Conid{ℕ}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{Nat}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{\char95 `∗\char95 }\;{}\<[11]%
-\>[11]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{Nat}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{Nat}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{Nat}{}\<[E]%
+\>[3]{}\Varid{\char95 `∗\char95 }\;{}\<[13]%
+\>[13]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{Nat}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{Nat}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{Nat}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{`let}\;{}\<[11]%
-\>[11]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{,}\;\Conid{A}\;\Varid{⊢}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{B}{}\<[E]%
+\>[3]{}\Varid{`let}\;{}\<[13]%
+\>[13]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{,}\;\Conid{A}\;\Varid{⊢}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{B}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{`⟨\char95 ,\char95 ⟩}\;{}\<[11]%
-\>[11]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{`×}\;\Conid{B}{}\<[E]%
+\>[3]{}\Varid{`⟨\char95 }\;\Varid{,}\;\Varid{\char95 ⟩}\;{}\<[13]%
+\>[13]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{`×}\;\Conid{B}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{`proj₁}\;{}\<[11]%
-\>[11]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{`×}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}{}\<[E]%
+\>[3]{}\Varid{`proj₁}\;{}\<[13]%
+\>[13]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{`×}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{`proj₂}\;{}\<[11]%
-\>[11]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{`×}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{B}{}\<[E]%
+\>[3]{}\Varid{`proj₂}\;{}\<[13]%
+\>[13]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{`×}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{B}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{case×}\;{}\<[11]%
-\>[11]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{`×}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{,}\;\Conid{A}\;\Varid{,}\;\Conid{B}\;\Varid{⊢}\;\Conid{C}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{C}{}\<[E]%
+\>[3]{}\Varid{case×}\;{}\<[13]%
+\>[13]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{`×}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{,}\;\Conid{A}\;\Varid{,}\;\Conid{B}\;\Varid{⊢}\;\Conid{C}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{C}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 	\end{exampleblock}
@@ -650,7 +654,7 @@ All the other operations are to be repeated:
 \end{frame}
 
 \begin{frame}[fragile]{Existing work by Allais et al.}
-	Allais et al. present a universe of syntaxes $\mathit{Desc}$,
+	Allais et al. present a universe of syntaxes \mi{Desc},
 	\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{9}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -674,7 +678,7 @@ All the other operations are to be repeated:
 \end{frame}
 
 \begin{frame}[fragile]{Existing work by Allais et al.}
-	Simply typed λ-calculus
+Simply typed $\uplambda$-calculus
 	\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -691,28 +695,101 @@ All the other operations are to be repeated:
 \>[3]{}\Varid{‵lam}\;\mathbin{:}\;\Conid{STLC}\;\Varid{τ}\;(\Varid{σ}\;\Varid{∷}\;\Conid{Γ})\;\Varid{→}\;\Conid{STLC}\;(\Varid{σ}\;\Varid{‵→}\;\Varid{τ})\;\Conid{Γ}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
-	can be encoded in $\mathit{Desc}$:
+	\pause
+can be encoded in \mi{Desc}:
+	\metroset{block=fill}
+	\begin{exampleblock}{Example 4, description of simply typed $\uplambda$-calculus.}
+	\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{9}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Conid{STLC}\;\mathbin{:}\;\Conid{Desc}\;\Conid{Type}{}\<[E]%
+\\
+\>[B]{}\Conid{STLC}\;\mathrel{=}\;\Varid{σ}\;\Varid{‵STLC}\;\Varid{λ}\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}(\Conid{App}\;{}\<[9]%
+\>[9]{}\Varid{i}\;\Varid{j})\;\Varid{→}\;\Varid{‵X}\;\Varid{[]}\;(\Varid{i}\;\Varid{‵→}\;\Varid{j})\;(\Varid{‵X}\;\Varid{[]}\;\Varid{i}\;(\Varid{▪}\;\Varid{j})){}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}(\Conid{Lam}\;{}\<[9]%
+\>[9]{}\Varid{i}\;\Varid{j})\;\Varid{→}\;\Varid{‵X}\;(\Varid{i}\;\Varid{∷}\;\Varid{[]})\;\Varid{j}\;(\Varid{▪}\;(\Varid{i}\;\Varid{‵→}\;\Varid{j})){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+	\end{exampleblock}
+	\pause
+where $‵STLC$ and $Type$ are defined as:
+	\begin{multicols}{2}
+	\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mathbf{data}\;\Varid{‵STLC}\;\mathbin{:}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Conid{App}\;\Conid{Lam}\;\mathbin{:}\;\Conid{Type}\;\Varid{→}\;\Conid{Type}\;\Varid{→}\;\Varid{‵STLC}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+	\columnbreak
+	\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{9}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mathbf{data}\;\Conid{Type}\;\mathbin{:}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{α}\;{}\<[9]%
+\>[9]{}\mathbin{:}\;\Conid{Type}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{\char95 ‵→\char95 }\;{}\<[9]%
+\>[9]{}\mathbin{:}\;\Conid{Type}\;\Varid{→}\;\Conid{Type}\;\Varid{→}\;\Conid{Type}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+	\end{multicols}
+
 \end{frame}
 
 \begin{frame}[fragile]{Existing work by Allais et al.}
-	The universe Desc is specific about what syntaxes are captured:
-\end{frame}
+	Generic programs are defined as \mi{Semantics} records.
 
-\begin{frame}[fragile]{Existing work by Allais et al.}
-	Generic programs are defined as Semantics records,
-	A generic program is realized via semantics on the fixpoint constructor Tm.
-	
+	A generic program, defined on the fixpoint constructor \mi{Tm}, is realized via \mi{semantics}.
+	\metroset{block=fill}
+	\begin{exampleblock}{Example 5, generic rename function.}
+	\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{19}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Conid{Renaming}\;\mathbin{:}\;\Varid{∀}\;\{\mskip1.5mu \Varid{d}\;\mathbin{:}\;\Conid{Desc}\;\Conid{I}\mskip1.5mu\}\;\Varid{→}\;\Conid{Semantics}\;\Varid{d}\;\Conid{Var}\;(\Conid{Tm}\;\Varid{d}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{rename}\;\mathbin{:}\;\Varid{∀}\;\{\mskip1.5mu \Varid{d}\;\mathbin{:}\;\Conid{Desc}\;\Conid{I}\mskip1.5mu\}\;\Varid{→}\;(\Varid{∀}\;\{\mskip1.5mu \Varid{i}\mskip1.5mu\}\;\Varid{→}\;\Conid{Var}\;\Varid{i}\;\Conid{Γ}\;\Varid{→}\;\Conid{Var}\;\Varid{i}\;\Conid{Δ})\;{}\<[E]%
+\\
+\>[B]{}\hsindent{19}{}\<[19]%
+\>[19]{}\Varid{→}\;\Conid{Tm}\;\Varid{d}\;\Varid{j}\;\Conid{Γ}\;{}\<[E]%
+\\
+\>[B]{}\hsindent{19}{}\<[19]%
+\>[19]{}\Varid{→}\;\Conid{Tm}\;\Varid{d}\;\Varid{j}\;\Conid{Δ}{}\<[E]%
+\\
+\>[B]{}\Varid{rename}\;\Varid{ρ}\;\Varid{t}\;\mathrel{=}\;\Varid{semantics}\;\Conid{Renaming}\;\Varid{ρ}\;\Varid{t}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+	\end{exampleblock}
+\mi{rename} is generic as it can be applied to fixpoints of any description (e.g. $\mi{Tm}\ \mi{STLC}$).
 \end{frame}
 
 \begin{frame}[fragile]{Motivation cont.}
-	The problem with applying standard datatype-generic programming to syntax-generic operations is..
-	\begin{itemize}
-		\item The datatype to work on is non-intuitive
-		\item The function definition to work on is non-intuitive
-		\item Require the programmer to understand the syntax universe
-		\item Interoperability: 
-	\end{itemize}
-	
+	The problems with applying standard datatype-generic programming to syntax-generic operations are:
+	\begin{enumerate}
+		\item datatype/function definitions are non-intuitive (no more beautiful typing rules \& IDE supports!),
+		\item requiring the programmer to understand the syntax universe, and
+		\item interoperability: difficult (if not impossible) to work with existing libraries or other generic libraries.
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Motivation cont.}
+	Programmers prefer syntaxes and operations as natural datatypes and functions,
 \end{frame}
 
 \section{Elaborator Reflection to the Rescue}
@@ -720,23 +797,18 @@ All the other operations are to be repeated:
 \begin{frame}[fragile]{Elaborator Reflection to the Rescue}
 	In our published work at ICFP, we have provided:
 	\begin{itemize}
-		\item a description DataD generic enough to describe inductive datatypes in Agda
-		\item generic program descriptions for folds (FoldP) and inductions (IndP)
-		\item metaprograms for generating datatype description (genDataD) and for generating function definitions from their generic representations (defineFold).
+		\item a description \mi{DataD} generic enough for any Agda's inductive datatypes,
+		\item generic program descriptions \mi{FoldP} for folds (and \mi{IndP} for inductions),
+		\item a metaprogram \mi{genDataD} that generates datatype descriptions from their native definitions, and 
+		\item a metaprogram \mi{defineFold} that generates function definitions from their generic representations.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{Elaborator Reflection to the Rescue}
-	We notice that
+\begin{frame}[fragile]{Motivation cont.}
+	We define:
 	\begin{itemize}
-		\item a "natural" syntax definition is concomitantly a datatype definition,
-		\item generic programs defined as Semantics are generic fold operations.
-	\end{itemize}
-	\pause
-	Additionally we define:
-	\begin{itemize}
-		\item a predicate Syntax on our generic datatype description DataD such that the predication is equivalent to the syntax universe Desc given by Allais et al.
-		\item a function SemP that generates the description of the generic fold operation (FoldP), given proofs of the predicate
+		\item a predicate \mi{Syntax} on \mi{DataD} that captures a subset equivalent to \mi{Desc}.
+		\item a function \mi{SemP} that generates descriptions (typed \mi{FoldP}) of generic fold operations, given proofs of the predicate.
 	\end{itemize}
 \end{frame}
 
@@ -744,24 +816,69 @@ All the other operations are to be repeated:
 \includegraphics[width=\columnwidth]{Diagram.pdf}
 \end{frame}
 
-\begin{frame}[fragile]{The Syntax Predicate}
-We define Syntax, a predicate on DataD, to capture Agda datatypes that are syntaxes in Allais et al.'s Desc universe. Allais et al.'s universe cover specific syntaxes that
+\begin{frame}[fragile]{The \mi{Syntax} Predicate}
+\mi{Syntax}, a predicate on \mi{DataD}, captures datatypes that are syntaxes in \mi{Desc}.
+	\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Conid{Syntaxᵈ}\;\mathbin{:}\;\Conid{Set}\;\Varid{ℓ}\;\Varid{→}\;\Conid{DataD}\;\Varid{→}\;\Conid{Setω}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{frame}
+
+\begin{frame}[fragile]{The \mi{Syntax} Predicate}
+Let's specify what syntaxes are captured by \mi{Desc}:
 	\begin{itemize}
-		\item each has a variable rule as its first rules,
-		\item are not universe polymorphic,
-		\item have two indexes, one of them being a list, implying single context, and
-		\item only allow context extentions in subterms.
+		\item each of them has a variable rule as its first rule,
+		\item they are not universe polymorphic,
+		\item each have two indices, $I$ and $\mi{List}\ I$, and
+		\item allow and only allow context extensions in subterms.
 	\end{itemize}
+There's a catch: \mi{DataD} satisfying \mi{Syntax} is not isomorphic to \mi{Desc}!
+\end{frame}
+
+\begin{frame}[fragile]{The \mi{Syntax} Predicate}
+Does \mi{PCF} satisfies \mi{Syntax}?
+	\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{10}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{27}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mathbf{data}\;\Conid{PCF}\;\mathbin{:}\;\Conid{Type}\;\Varid{→}\;\Conid{List}\;\Conid{Type}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{‵var}\;{}\<[10]%
+\>[10]{}\mathbin{:}\;\Conid{Var}\;\Varid{σ}\;\Conid{Γ}\;\Varid{→}\;\Conid{PCF}\;\Varid{σ}\;\Conid{Γ}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{‵app}\;{}\<[10]%
+\>[10]{}\mathbin{:}\;\Conid{PCF}\;(\Varid{σ}\;\Varid{‵→}\;\Varid{τ})\;\Conid{Γ}\;\Varid{→}\;\Conid{PCF}\;\Varid{σ}\;\Conid{Γ}\;\Varid{→}\;\Conid{PCF}\;\Varid{τ}\;\Conid{Γ}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{‵lam}\;{}\<[10]%
+\>[10]{}\mathbin{:}\;\Conid{PCF}\;\Varid{τ}\;(\Varid{σ}\;\Varid{∷}\;\Conid{Γ})\;{}\<[27]%
+\>[27]{}\Varid{→}\;\Conid{PCF}\;(\Varid{σ}\;\Varid{‵→}\;\Varid{τ})\;\Conid{Γ}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{‵zero}\;{}\<[10]%
+\>[10]{}\mathbin{:}\;\Conid{PCF}\;\Varid{‵ℕ}\;\Conid{Γ}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{‵suc\char95 }\;{}\<[10]%
+\>[10]{}\mathbin{:}\;\Conid{PCF}\;\Varid{‵ℕ}\;\Conid{Γ}\;\Varid{→}\;\Conid{PCF}\;\Varid{‵ℕ}\;\Conid{Γ}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
 \end{frame}
 
 \begin{frame}[fragile]{The Syntax Predicate}
 	\metroset{block=fill}
-	\begin{exampleblock}{A complete Syntax proof}
+	\begin{exampleblock}{A Syntax proof example}
 		\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{9}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\Conid{SyntaxPCF}\;\mathbin{:}\;\Conid{Syntaxᵈ}\;\Conid{Type}\;(\Varid{findDataD}\;(\Varid{quote}\;\Conid{PCF})){}\<[E]%
+\>[B]{}\Conid{SyntaxPCF}\;\mathbin{:}\;\Conid{Syntaxᵈ}\;\Conid{Type}\;(\Varid{genDataD}\;(\Varid{quote}\;\Conid{PCF})){}\<[E]%
 \\
 \>[B]{}\Conid{SyntaxPCF}\;\mathrel{=}\;\anonymous \;{}\<[E]%
 \\
@@ -769,7 +886,7 @@ We define Syntax, a predicate on DataD, to capture Agda datatypes that are synta
 \>[9]{}\Varid{,}\;\Varid{refl}\;{}\<[E]%
 \\
 \>[B]{}\hsindent{9}{}\<[9]%
-\>[9]{}\Varid{,}\;(\Varid{refl}\;\Varid{,ωω}\;\Varid{refl})\;{}\<[E]%
+\>[9]{}\Varid{,}\;(\Varid{refl}\;\Varid{,refl})\;{}\<[E]%
 \\
 \>[B]{}\hsindent{9}{}\<[9]%
 \>[9]{}\Varid{,}\;\anonymous \;{}\<[E]%
@@ -793,20 +910,22 @@ We define Syntax, a predicate on DataD, to capture Agda datatypes that are synta
 \>[9]{}\Varid{,}\;(\anonymous \;\Varid{,}\;\anonymous \;\Varid{,}\;\anonymous \;\Varid{,}\;\Varid{refl}\;\Varid{,}\;(\Varid{λ}\;\anonymous \;\Varid{→}\;\Varid{refl}))\;{}\<[E]%
 \\
 \>[B]{}\hsindent{9}{}\<[9]%
-\>[9]{}\Varid{,}\;\Varid{lift}\;\Varid{tt}{}\<[E]%
+\>[9]{}\Varid{,}\;\Varid{tt}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 	\end{exampleblock}
+	\mi{Syntax} proofs in this case are amenable to be generated with elaborator reflection.
 \end{frame}
 
-\begin{frame}[fragile]{Translation from Semantics to natural looking functions}
-\end{frame}
-
-\section{Usage}
+% \begin{frame}[fragile]{Translation from Semantics to natural looking functions}
+% \end{frame}
 
 \section{Demo}
 
-\section{Conclusion}
+\section{Discussion}
+
+\begin{frame}[fragile]{Towards datatype-generic libraries for all syntaxes?}
+\end{frame}
 
 \end{document}
 
