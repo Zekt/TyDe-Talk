@@ -39,7 +39,7 @@
 % \usepackage{comment}
 % \usepackage{ucs}
 % \usepackage{bbm}
-\usepackage[style=verbose,backend=biber]{biblatex}
+\usepackage[style=authortitle,backend=biber]{biblatex}
 \addbibresource{bib.bib}
 \usepackage[greek,english]{babel}
 \usepackage{newunicodechar}
@@ -223,7 +223,7 @@ print : Γ ⊢ A → String
 \begin{frame}[fragile]{Existing work}
   There have been generic libraries providing constructions that can be specialised for a whole family of syntaxes with binders~\footcite{Allais-generic-syntax}\footcite{Fiore-SOAS-Agda}\footcite{Ahrens-typed-abstract-syntax}.
 
-	We take a closer look on Allais et al.\footnotemark[1]'s approach.
+	We take a closer look on Allais et al.'s approach\footnotemark[1] published at \break ICFP '18.
 \end{frame}
 
 \begin{frame}[fragile]{Existing work by Allais et al.}
@@ -255,35 +255,38 @@ STLC = σ ‵STLC λ where
   (Lam  i j) → ‵X (i ∷ []) j (▪ (i ‵→ j))
 	\end{code}
 	\end{exampleblock}
-	\pause
-where $‵STLC$ and $Type$ are defined as:
-	\begin{multicols}{2}
-	\begin{code}
-data ‵STLC : Set where
-  App Lam : Type → Type → ‵STLC
-	\end{code}
-	\columnbreak
+\end{frame}
+
+\begin{frame}[fragile]{Existing work by Allais et al.}
+	\metroset{block=fill}
+	\begin{exampleblock}{Example 4 in full.}
 	\begin{code}
 data Type : Set where
   α     : Type
   _‵→_  : Type → Type → Type
-	\end{code}
-	\end{multicols}
 
+data ‵STLC : Set where
+  App Lam : Type → Type → ‵STLC
+
+STLC : Desc Type
+STLC = σ ‵STLC λ where
+  (App  i j) → ‵X [] (i ‵→ j) (‵X [] i (▪ j))
+  (Lam  i j) → ‵X (i ∷ []) j (▪ (i ‵→ j))
+	\end{code}
+	\end{exampleblock}
 \end{frame}
 
 \begin{frame}[fragile]{Existing work by Allais et al.}
-	Generic programs are defined as \mi{Semantics} records.
+	Generic programs are described by \mi{Semantics} records.
 
-	A generic program, defined on the fixpoint constructor \mi{Tm}, is realized via \mi{semantics}.
+	They can be realized as functions on the fixpoint constructor \mi{Tm} via \mi{semantics}.
 	\metroset{block=fill}
 	\begin{exampleblock}{Example 5, generic rename function.}
 	\begin{code}
 Renaming : ∀ {d : Desc I} → Semantics d Var (Tm d)
 
-rename : ∀ {d : Desc I} → (∀ {i} → Var i Γ → Var i Δ)
-                  → Tm d j Γ
-                  → Tm d j Δ
+rename : ∀ {d : Desc I} → (∀ {i}  → Var i Γ → Var i Δ)
+                                  → Tm d j Γ → Tm d j Δ
 rename ρ t = semantics Renaming ρ t
 	\end{code}
 	\end{exampleblock}
@@ -292,15 +295,67 @@ rename ρ t = semantics Renaming ρ t
 
 \begin{frame}[fragile]{Motivation cont.}
 	The problems with applying standard datatype-generic programming to syntax-generic operations are:
+	\pause
 	\begin{enumerate}
 		\item datatype/function definitions are non-intuitive (no more beautiful typing rules \& IDE supports!),
+		\pause
 		\item requiring the programmer to understand the syntax universe, and
+		\pause
 		\item interoperability: difficult (if not impossible) to work with existing libraries or other generic libraries.
 	\end{enumerate}
 \end{frame}
 
 \begin{frame}[fragile]{Motivation cont.}
 	Programmers prefer syntaxes and operations as natural datatypes and functions,
+	\aha{
+		\begin{code}
+rename : ∀ {Γ Δ}  → (∀ {A} → Γ ∋  A → Δ ∋  A)
+                  → (∀ {A} → Γ ⊢  A → Δ ⊢  A)
+rename ρ (` x)          =  ` (ρ x)
+rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
+rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)
+
+Renaming : Semantics Var Lam
+Renaming = record
+  { th^V  = th^Var
+  ; var   = ‘var
+  ; app   = ‘app
+  ; lam   = λ b → ‘lam (b weaken z) }
+rename = semantics Renaming
+		\end{code}
+	}{
+		\begin{code}
+data _⊢_ : Context → Type → Set where
+  `_     : Γ ∋ A → Γ ⊢ A
+  ƛ_     : Γ , A ⊢ B → Γ ⊢ A ⇒ B
+  _·_    : Γ ⊢ A ⇒ B → Γ ⊢ A → Γ ⊢ B
+		\end{code}
+	\begin{code}
+STLC : Desc Type
+STLC = σ ‵STLC λ where
+  (App  i j) → ‵X [] (i ‵→ j) (‵X [] i (▪ j))
+  (Lam  i j) → ‵X (i ∷ []) j (▪ (i ‵→ j))
+	\end{code}
+	}
+\end{frame}
+
+\begin{frame}[fragile]{Motivation cont.}
+	Programmers prefer syntaxes and operations as natural datatypes and functions,
+		\begin{code}
+rename : ∀ {Γ Δ}  → (∀ {A} → Γ ∋  A → Δ ∋  A)
+                  → (∀ {A} → Γ ⊢  A → Δ ⊢  A)
+rename ρ (` x)          =  ` (ρ x)
+rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
+rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)
+
+Renaming : Semantics Var Lam
+Renaming = record
+  { th^V  = th^Var
+  ; var   = ‘var
+  ; app   = ‘app
+  ; lam   = λ b → ‘lam (b weaken z) }
+rename = semantics Renaming
+	\end{code}
 \end{frame}
 
 \section{Elaborator Reflection to the Rescue}
@@ -321,6 +376,7 @@ rename ρ t = semantics Renaming ρ t
 		\item a predicate \mi{Syntax} on \mi{DataD} that captures a subset equivalent to \mi{Desc}.
 		\item a function \mi{SemP} that generates descriptions (typed \mi{FoldP}) of generic fold operations, given proofs of the predicate.
 	\end{itemize}
+It turns out all programs defined with \mi{Semantics} are folds.
 \end{frame}
 
 \begin{frame}[fragile]{Flow Chart}
@@ -386,6 +442,11 @@ SyntaxPCF = _
 \section{Discussion}
 
 \begin{frame}[fragile]{Towards datatype-generic libraries for syntaxes?}
+	\begin{itemize}
+		\item Lack of individual generic program definitions
+		\item Quality of generated codes
+		\item Expressiveness of \emph{the} single universe (of Agda datatypes)
+	\end{itemize}
 \end{frame}
 
 \end{document}

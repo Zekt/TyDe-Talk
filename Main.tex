@@ -39,7 +39,7 @@
 % \usepackage{comment}
 % \usepackage{ucs}
 % \usepackage{bbm}
-\usepackage[style=verbose,backend=biber]{biblatex}
+\usepackage[style=authortitle,backend=biber]{biblatex}
 \addbibresource{bib.bib}
 \usepackage[greek,english]{babel}
 \usepackage{newunicodechar}
@@ -650,7 +650,7 @@ All the other operations are to be repeated:
 \begin{frame}[fragile]{Existing work}
   There have been generic libraries providing constructions that can be specialised for a whole family of syntaxes with binders~\footcite{Allais-generic-syntax}\footcite{Fiore-SOAS-Agda}\footcite{Ahrens-typed-abstract-syntax}.
 
-	We take a closer look on Allais et al.\footnotemark[1]'s approach.
+	We take a closer look on Allais et al.'s approach\footnotemark[1] published at \break ICFP '18.
 \end{frame}
 
 \begin{frame}[fragile]{Existing work by Allais et al.}
@@ -718,20 +718,11 @@ can be encoded in \mi{Desc}:
 \ColumnHook
 \end{hscode}\resethooks
 	\end{exampleblock}
-	\pause
-where $‵STLC$ and $Type$ are defined as:
-	\begin{multicols}{2}
-	\begin{hscode}\SaveRestoreHook
-\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\mathbf{data}\;\Varid{‵STLC}\;\mathbin{:}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
-\\
-\>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Conid{App}\;\Conid{Lam}\;\mathbin{:}\;\Conid{Type}\;\Varid{→}\;\Conid{Type}\;\Varid{→}\;\Varid{‵STLC}{}\<[E]%
-\ColumnHook
-\end{hscode}\resethooks
-	\columnbreak
+\end{frame}
+
+\begin{frame}[fragile]{Existing work by Allais et al.}
+	\metroset{block=fill}
+	\begin{exampleblock}{Example 4 in full.}
 	\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -746,31 +737,44 @@ where $‵STLC$ and $Type$ are defined as:
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Varid{\char95 ‵→\char95 }\;{}\<[9]%
 \>[9]{}\mathbin{:}\;\Conid{Type}\;\Varid{→}\;\Conid{Type}\;\Varid{→}\;\Conid{Type}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\mathbf{data}\;\Varid{‵STLC}\;\mathbin{:}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Conid{App}\;\Conid{Lam}\;\mathbin{:}\;\Conid{Type}\;\Varid{→}\;\Conid{Type}\;\Varid{→}\;\Varid{‵STLC}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Conid{STLC}\;\mathbin{:}\;\Conid{Desc}\;\Conid{Type}{}\<[E]%
+\\
+\>[B]{}\Conid{STLC}\;\mathrel{=}\;\Varid{σ}\;\Varid{‵STLC}\;\Varid{λ}\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}(\Conid{App}\;{}\<[9]%
+\>[9]{}\Varid{i}\;\Varid{j})\;\Varid{→}\;\Varid{‵X}\;\Varid{[]}\;(\Varid{i}\;\Varid{‵→}\;\Varid{j})\;(\Varid{‵X}\;\Varid{[]}\;\Varid{i}\;(\Varid{▪}\;\Varid{j})){}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}(\Conid{Lam}\;{}\<[9]%
+\>[9]{}\Varid{i}\;\Varid{j})\;\Varid{→}\;\Varid{‵X}\;(\Varid{i}\;\Varid{∷}\;\Varid{[]})\;\Varid{j}\;(\Varid{▪}\;(\Varid{i}\;\Varid{‵→}\;\Varid{j})){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
-	\end{multicols}
-
+	\end{exampleblock}
 \end{frame}
 
 \begin{frame}[fragile]{Existing work by Allais et al.}
-	Generic programs are defined as \mi{Semantics} records.
+	Generic programs are described by \mi{Semantics} records.
 
-	A generic program, defined on the fixpoint constructor \mi{Tm}, is realized via \mi{semantics}.
+	They can be realized as functions on the fixpoint constructor \mi{Tm} via \mi{semantics}.
 	\metroset{block=fill}
 	\begin{exampleblock}{Example 5, generic rename function.}
 	\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{19}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{35}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[B]{}\Conid{Renaming}\;\mathbin{:}\;\Varid{∀}\;\{\mskip1.5mu \Varid{d}\;\mathbin{:}\;\Conid{Desc}\;\Conid{I}\mskip1.5mu\}\;\Varid{→}\;\Conid{Semantics}\;\Varid{d}\;\Conid{Var}\;(\Conid{Tm}\;\Varid{d}){}\<[E]%
 \\[\blanklineskip]%
-\>[B]{}\Varid{rename}\;\mathbin{:}\;\Varid{∀}\;\{\mskip1.5mu \Varid{d}\;\mathbin{:}\;\Conid{Desc}\;\Conid{I}\mskip1.5mu\}\;\Varid{→}\;(\Varid{∀}\;\{\mskip1.5mu \Varid{i}\mskip1.5mu\}\;\Varid{→}\;\Conid{Var}\;\Varid{i}\;\Conid{Γ}\;\Varid{→}\;\Conid{Var}\;\Varid{i}\;\Conid{Δ})\;{}\<[E]%
+\>[B]{}\Varid{rename}\;\mathbin{:}\;\Varid{∀}\;\{\mskip1.5mu \Varid{d}\;\mathbin{:}\;\Conid{Desc}\;\Conid{I}\mskip1.5mu\}\;\Varid{→}\;(\Varid{∀}\;\{\mskip1.5mu \Varid{i}\mskip1.5mu\}\;{}\<[35]%
+\>[35]{}\Varid{→}\;\Conid{Var}\;\Varid{i}\;\Conid{Γ}\;\Varid{→}\;\Conid{Var}\;\Varid{i}\;\Conid{Δ})\;{}\<[E]%
 \\
-\>[B]{}\hsindent{19}{}\<[19]%
-\>[19]{}\Varid{→}\;\Conid{Tm}\;\Varid{d}\;\Varid{j}\;\Conid{Γ}\;{}\<[E]%
-\\
-\>[B]{}\hsindent{19}{}\<[19]%
-\>[19]{}\Varid{→}\;\Conid{Tm}\;\Varid{d}\;\Varid{j}\;\Conid{Δ}{}\<[E]%
+\>[35]{}\Varid{→}\;\Conid{Tm}\;\Varid{d}\;\Varid{j}\;\Conid{Γ}\;\Varid{→}\;\Conid{Tm}\;\Varid{d}\;\Varid{j}\;\Conid{Δ}{}\<[E]%
 \\
 \>[B]{}\Varid{rename}\;\Varid{ρ}\;\Varid{t}\;\mathrel{=}\;\Varid{semantics}\;\Conid{Renaming}\;\Varid{ρ}\;\Varid{t}{}\<[E]%
 \ColumnHook
@@ -781,15 +785,171 @@ where $‵STLC$ and $Type$ are defined as:
 
 \begin{frame}[fragile]{Motivation cont.}
 	The problems with applying standard datatype-generic programming to syntax-generic operations are:
+	\pause
 	\begin{enumerate}
 		\item datatype/function definitions are non-intuitive (no more beautiful typing rules \& IDE supports!),
+		\pause
 		\item requiring the programmer to understand the syntax universe, and
+		\pause
 		\item interoperability: difficult (if not impossible) to work with existing libraries or other generic libraries.
 	\end{enumerate}
 \end{frame}
 
 \begin{frame}[fragile]{Motivation cont.}
 	Programmers prefer syntaxes and operations as natural datatypes and functions,
+	\aha{
+		\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{11}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{19}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{25}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{28}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{35}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{44}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{rename}\;\mathbin{:}\;\Varid{∀}\;\{\mskip1.5mu \Conid{Γ}\;\Conid{Δ}\mskip1.5mu\}\;{}\<[19]%
+\>[19]{}\Varid{→}\;(\Varid{∀}\;\{\mskip1.5mu \Conid{A}\mskip1.5mu\}\;\Varid{→}\;\Conid{Γ}\;\Varid{∋}\;{}\<[35]%
+\>[35]{}\Conid{A}\;\Varid{→}\;\Conid{Δ}\;\Varid{∋}\;{}\<[44]%
+\>[44]{}\Conid{A})\;{}\<[E]%
+\\
+\>[19]{}\Varid{→}\;(\Varid{∀}\;\{\mskip1.5mu \Conid{A}\mskip1.5mu\}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;{}\<[35]%
+\>[35]{}\Conid{A}\;\Varid{→}\;\Conid{Δ}\;\Varid{⊢}\;{}\<[44]%
+\>[44]{}\Conid{A}){}\<[E]%
+\\
+\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{`}\;\Varid{x})\;{}\<[25]%
+\>[25]{}\mathrel{=}\;{}\<[28]%
+\>[28]{}\Varid{`}\;(\Varid{ρ}\;\Varid{x}){}\<[E]%
+\\
+\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{ƛ}\;\Conid{N})\;{}\<[25]%
+\>[25]{}\mathrel{=}\;{}\<[28]%
+\>[28]{}\Varid{ƛ}\;(\Varid{rename}\;(\Varid{ext}\;\Varid{ρ})\;\Conid{N}){}\<[E]%
+\\
+\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Conid{L}\;\Varid{·}\;\Conid{M})\;{}\<[25]%
+\>[25]{}\mathrel{=}\;{}\<[28]%
+\>[28]{}(\Varid{rename}\;\Varid{ρ}\;\Conid{L})\;\Varid{·}\;(\Varid{rename}\;\Varid{ρ}\;\Conid{M}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Conid{Renaming}\;\mathbin{:}\;\Conid{Semantics}\;\Conid{Var}\;\Conid{Lam}{}\<[E]%
+\\
+\>[B]{}\Conid{Renaming}\;\mathrel{=}\;\mathbf{record}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\{\mskip1.5mu \Varid{th\char94 V}\;{}\<[11]%
+\>[11]{}\mathrel{=}\;\Varid{th\char94 Var}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{};\Varid{var}\;{}\<[11]%
+\>[11]{}\mathrel{=}\;\Varid{‘var}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{};\Varid{app}\;{}\<[11]%
+\>[11]{}\mathrel{=}\;\Varid{‘app}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{};\Varid{lam}\;{}\<[11]%
+\>[11]{}\mathrel{=}\;\Varid{λ}\;\Varid{b}\;\Varid{→}\;\Varid{‘lam}\;(\Varid{b}\;\Varid{weaken}\;\Varid{z})\mskip1.5mu\}{}\<[E]%
+\\
+\>[B]{}\Varid{rename}\;\mathrel{=}\;\Varid{semantics}\;\Conid{Renaming}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+	}{
+		\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{10}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mathbf{data}\;\Varid{\char95 ⊢\char95 }\;\mathbin{:}\;\Conid{Context}\;\Varid{→}\;\Conid{Type}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{`\char95 }\;{}\<[10]%
+\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{∋}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{ƛ\char95 }\;{}\<[10]%
+\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{,}\;\Conid{A}\;\Varid{⊢}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{⇒}\;\Conid{B}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{\char95 ·\char95 }\;{}\<[10]%
+\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{⇒}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{B}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+	\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{9}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Conid{STLC}\;\mathbin{:}\;\Conid{Desc}\;\Conid{Type}{}\<[E]%
+\\
+\>[B]{}\Conid{STLC}\;\mathrel{=}\;\Varid{σ}\;\Varid{‵STLC}\;\Varid{λ}\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}(\Conid{App}\;{}\<[9]%
+\>[9]{}\Varid{i}\;\Varid{j})\;\Varid{→}\;\Varid{‵X}\;\Varid{[]}\;(\Varid{i}\;\Varid{‵→}\;\Varid{j})\;(\Varid{‵X}\;\Varid{[]}\;\Varid{i}\;(\Varid{▪}\;\Varid{j})){}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}(\Conid{Lam}\;{}\<[9]%
+\>[9]{}\Varid{i}\;\Varid{j})\;\Varid{→}\;\Varid{‵X}\;(\Varid{i}\;\Varid{∷}\;\Varid{[]})\;\Varid{j}\;(\Varid{▪}\;(\Varid{i}\;\Varid{‵→}\;\Varid{j})){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+	}
+\end{frame}
+
+\begin{frame}[fragile]{Motivation cont.}
+	Programmers prefer syntaxes and operations as natural datatypes and functions,
+		\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{11}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{19}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{25}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{28}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{35}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{44}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{rename}\;\mathbin{:}\;\Varid{∀}\;\{\mskip1.5mu \Conid{Γ}\;\Conid{Δ}\mskip1.5mu\}\;{}\<[19]%
+\>[19]{}\Varid{→}\;(\Varid{∀}\;\{\mskip1.5mu \Conid{A}\mskip1.5mu\}\;\Varid{→}\;\Conid{Γ}\;\Varid{∋}\;{}\<[35]%
+\>[35]{}\Conid{A}\;\Varid{→}\;\Conid{Δ}\;\Varid{∋}\;{}\<[44]%
+\>[44]{}\Conid{A})\;{}\<[E]%
+\\
+\>[19]{}\Varid{→}\;(\Varid{∀}\;\{\mskip1.5mu \Conid{A}\mskip1.5mu\}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;{}\<[35]%
+\>[35]{}\Conid{A}\;\Varid{→}\;\Conid{Δ}\;\Varid{⊢}\;{}\<[44]%
+\>[44]{}\Conid{A}){}\<[E]%
+\\
+\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{`}\;\Varid{x})\;{}\<[25]%
+\>[25]{}\mathrel{=}\;{}\<[28]%
+\>[28]{}\Varid{`}\;(\Varid{ρ}\;\Varid{x}){}\<[E]%
+\\
+\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{ƛ}\;\Conid{N})\;{}\<[25]%
+\>[25]{}\mathrel{=}\;{}\<[28]%
+\>[28]{}\Varid{ƛ}\;(\Varid{rename}\;(\Varid{ext}\;\Varid{ρ})\;\Conid{N}){}\<[E]%
+\\
+\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Conid{L}\;\Varid{·}\;\Conid{M})\;{}\<[25]%
+\>[25]{}\mathrel{=}\;{}\<[28]%
+\>[28]{}(\Varid{rename}\;\Varid{ρ}\;\Conid{L})\;\Varid{·}\;(\Varid{rename}\;\Varid{ρ}\;\Conid{M}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Conid{Renaming}\;\mathbin{:}\;\Conid{Semantics}\;\Conid{Var}\;\Conid{Lam}{}\<[E]%
+\\
+\>[B]{}\Conid{Renaming}\;\mathrel{=}\;\mathbf{record}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\{\mskip1.5mu \Varid{th\char94 V}\;{}\<[11]%
+\>[11]{}\mathrel{=}\;\Varid{th\char94 Var}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{};\Varid{var}\;{}\<[11]%
+\>[11]{}\mathrel{=}\;\Varid{‘var}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{};\Varid{app}\;{}\<[11]%
+\>[11]{}\mathrel{=}\;\Varid{‘app}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{};\Varid{lam}\;{}\<[11]%
+\>[11]{}\mathrel{=}\;\Varid{λ}\;\Varid{b}\;\Varid{→}\;\Varid{‘lam}\;(\Varid{b}\;\Varid{weaken}\;\Varid{z})\mskip1.5mu\}{}\<[E]%
+\\
+\>[B]{}\Varid{rename}\;\mathrel{=}\;\Varid{semantics}\;\Conid{Renaming}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
 \end{frame}
 
 \section{Elaborator Reflection to the Rescue}
@@ -810,6 +970,7 @@ where $‵STLC$ and $Type$ are defined as:
 		\item a predicate \mi{Syntax} on \mi{DataD} that captures a subset equivalent to \mi{Desc}.
 		\item a function \mi{SemP} that generates descriptions (typed \mi{FoldP}) of generic fold operations, given proofs of the predicate.
 	\end{itemize}
+It turns out all programs defined with \mi{Semantics} are folds.
 \end{frame}
 
 \begin{frame}[fragile]{Flow Chart}
@@ -924,7 +1085,12 @@ Does \mi{PCF} satisfies \mi{Syntax}?
 
 \section{Discussion}
 
-\begin{frame}[fragile]{Towards datatype-generic libraries for all syntaxes?}
+\begin{frame}[fragile]{Towards datatype-generic libraries for syntaxes?}
+	\begin{itemize}
+		\item Lack of idividual generic programs?
+		\item Quality of generated codes?
+		\item Expressiveness of \emph{the} single universe (Agda datatypes)?
+	\end{itemize}
 \end{frame}
 
 \end{document}
