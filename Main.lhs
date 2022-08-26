@@ -294,7 +294,7 @@ rename ρ t = semantics Renaming ρ t
 \end{frame}
 
 \begin{frame}[fragile]{Motivation cont.}
-	The problems with applying standard datatype-generic programming to syntax-generic operations are:
+	Problems with applying standard datatype-generic programming to syntax-generic operations:
 	\pause
 	\begin{enumerate}
 		\item datatype/function definitions are non-intuitive (no more beautiful typing rules \& IDE supports!),
@@ -306,7 +306,7 @@ rename ρ t = semantics Renaming ρ t
 \end{frame}
 
 \begin{frame}[fragile]{Motivation cont.}
-	Programmers prefer syntaxes and operations as natural datatypes and functions,
+	Programmers prefer ``natural'' datatype and function definitions,
 	\aha{
 		\begin{code}
 rename : ∀ {Γ Δ}  → (∀ {A} → Γ ∋  A → Δ ∋  A)
@@ -340,7 +340,7 @@ STLC = σ ‵STLC λ where
 \end{frame}
 
 \begin{frame}[fragile]{Motivation cont.}
-	Programmers prefer syntaxes and operations as natural datatypes and functions,
+	Programmers prefer ``natural'' datatypes and functions,
 		\begin{code}
 rename : ∀ {Γ Δ}  → (∀ {A} → Γ ∋  A → Δ ∋  A)
                   → (∀ {A} → Γ ⊢  A → Δ ⊢  A)
@@ -362,10 +362,14 @@ rename = semantics Renaming
 
 \begin{frame}[fragile]{Elaborator Reflection to the Rescue}
 	In our published work at ICFP, we have provided:
+	\pause
 	\begin{itemize}
 		\item a description \mi{DataD} generic enough for any Agda's inductive datatypes,
+		\pause
 		\item generic program descriptions \mi{FoldP} for folds (and \mi{IndP} for inductions),
+		\pause
 		\item a metaprogram \mi{genDataD} that generates datatype descriptions from their native definitions, and 
+		\pause
 		\item a metaprogram \mi{defineFold} that generates function definitions from their generic representations.
 	\end{itemize}
 \end{frame}
@@ -384,21 +388,20 @@ It turns out all programs defined with \mi{Semantics} are folds.
 \end{frame}
 
 \begin{frame}[fragile]{The \mi{Syntax} Predicate}
-\mi{Syntax}, a predicate on \mi{DataD}, captures datatypes that are syntaxes in \mi{Desc}.
 	\begin{code}
-Syntaxᵈ : Set ℓ → DataD → Setω
+Syntax : Set ℓ → DataD → Setω
 	\end{code}
-\end{frame}
-
-\begin{frame}[fragile]{The \mi{Syntax} Predicate}
-Let's specify what syntaxes are captured by \mi{Desc}:
+All syntaxes in \mi{Desc} should be captured by the \mi{Syntax} predicate:
+	\pause
 	\begin{itemize}
 		\item each of them has a variable rule as its first rule,
+		\pause
 		\item they are not universe polymorphic,
+		\pause
 		\item each have two indices, $I$ and $\mi{List}\ I$, and
+		\pause
 		\item allow and only allow context extensions in subterms.
 	\end{itemize}
-There's a catch: \mi{DataD} satisfying \mi{Syntax} is not isomorphic to \mi{Desc}!
 \end{frame}
 
 \begin{frame}[fragile]{The \mi{Syntax} Predicate}
@@ -413,11 +416,11 @@ data PCF : Type → List Type → Set where
 	\end{code}
 \end{frame}
 
-\begin{frame}[fragile]{The Syntax Predicate}
+\begin{frame}[fragile]{The \mi{Syntax} Predicate}
 	\metroset{block=fill}
 	\begin{exampleblock}{A Syntax proof example}
 		\begin{code}
-SyntaxPCF : Syntaxᵈ Type (genDataD (quote PCF))
+SyntaxPCF : Syntax Type (genDataD (quote PCF))
 SyntaxPCF = _
         , refl
         , (refl ,refl)
@@ -431,7 +434,6 @@ SyntaxPCF = _
         , tt
 		\end{code}
 	\end{exampleblock}
-	\mi{Syntax} proofs in this case are amenable to be generated with elaborator reflection.
 \end{frame}
 
 % \begin{frame}[fragile]{Translation from Semantics to natural looking functions}
@@ -439,15 +441,29 @@ SyntaxPCF = _
 
 \section{Demo}
 
-\section{Discussion}
+\section{Discussion: towards datatype-generic libraries for syntaxes?}
 
-\begin{frame}[fragile]{Towards datatype-generic libraries for syntaxes?}
+\begin{frame}[fragile]{Future Works \& Issues}
 	\begin{itemize}
-		\item Lack of individual generic program definitions
-		\item Quality of generated codes
-		\item Expressiveness of \emph{the} single universe (of Agda datatypes)
+		\item Proof automation with elaborator reflection 
+		\item Better user interface
+		\item Applying the framework to more generic libraries
+		\pause
+			\begin{itemize}
+				\item Expressiveness is limited by Agda datatypes as well as the generic universe, a \mi{Syntax} predicate must be defined.
+				\pause
+				\item Even if we can define \mi{Syntax}, the proof could be more complicated, even require programmers to understand the generic universe.
+				\pause
+				\item User-friendliness of using multiple generic libraries at once.
+				\pause
+				\item Are folds and inductions enough?
+			\end{itemize}
+	\pause
+	\item Is it worth it?
 	\end{itemize}
 \end{frame}
+
+\section{Q \& A}
 
 \end{document}
 

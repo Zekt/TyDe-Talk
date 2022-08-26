@@ -784,7 +784,7 @@ can be encoded in \mi{Desc}:
 \end{frame}
 
 \begin{frame}[fragile]{Motivation cont.}
-	The problems with applying standard datatype-generic programming to syntax-generic operations are:
+	Problems with applying standard datatype-generic programming to syntax-generic operations:
 	\pause
 	\begin{enumerate}
 		\item datatype/function definitions are non-intuitive (no more beautiful typing rules \& IDE supports!),
@@ -796,7 +796,7 @@ can be encoded in \mi{Desc}:
 \end{frame}
 
 \begin{frame}[fragile]{Motivation cont.}
-	Programmers prefer syntaxes and operations as natural datatypes and functions,
+	Programmers prefer ``natural'' datatype and function definitions,
 	\aha{
 		\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -895,7 +895,7 @@ can be encoded in \mi{Desc}:
 \end{frame}
 
 \begin{frame}[fragile]{Motivation cont.}
-	Programmers prefer syntaxes and operations as natural datatypes and functions,
+	Programmers prefer ``natural'' datatypes and functions,
 		\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -956,10 +956,14 @@ can be encoded in \mi{Desc}:
 
 \begin{frame}[fragile]{Elaborator Reflection to the Rescue}
 	In our published work at ICFP, we have provided:
+	\pause
 	\begin{itemize}
 		\item a description \mi{DataD} generic enough for any Agda's inductive datatypes,
+		\pause
 		\item generic program descriptions \mi{FoldP} for folds (and \mi{IndP} for inductions),
+		\pause
 		\item a metaprogram \mi{genDataD} that generates datatype descriptions from their native definitions, and 
+		\pause
 		\item a metaprogram \mi{defineFold} that generates function definitions from their generic representations.
 	\end{itemize}
 \end{frame}
@@ -978,24 +982,23 @@ It turns out all programs defined with \mi{Semantics} are folds.
 \end{frame}
 
 \begin{frame}[fragile]{The \mi{Syntax} Predicate}
-\mi{Syntax}, a predicate on \mi{DataD}, captures datatypes that are syntaxes in \mi{Desc}.
 	\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\Conid{Syntaxᵈ}\;\mathbin{:}\;\Conid{Set}\;\Varid{ℓ}\;\Varid{→}\;\Conid{DataD}\;\Varid{→}\;\Conid{Setω}{}\<[E]%
+\>[B]{}\Conid{Syntax}\;\mathbin{:}\;\Conid{Set}\;\Varid{ℓ}\;\Varid{→}\;\Conid{DataD}\;\Varid{→}\;\Conid{Setω}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
-\end{frame}
-
-\begin{frame}[fragile]{The \mi{Syntax} Predicate}
-Let's specify what syntaxes are captured by \mi{Desc}:
+All syntaxes in \mi{Desc} should be captured by the \mi{Syntax} predicate:
+	\pause
 	\begin{itemize}
 		\item each of them has a variable rule as its first rule,
+		\pause
 		\item they are not universe polymorphic,
+		\pause
 		\item each have two indices, $I$ and $\mi{List}\ I$, and
+		\pause
 		\item allow and only allow context extensions in subterms.
 	\end{itemize}
-There's a catch: \mi{DataD} satisfying \mi{Syntax} is not isomorphic to \mi{Desc}!
 \end{frame}
 
 \begin{frame}[fragile]{The \mi{Syntax} Predicate}
@@ -1032,14 +1035,14 @@ Does \mi{PCF} satisfies \mi{Syntax}?
 \end{hscode}\resethooks
 \end{frame}
 
-\begin{frame}[fragile]{The Syntax Predicate}
+\begin{frame}[fragile]{The \mi{Syntax} Predicate}
 	\metroset{block=fill}
 	\begin{exampleblock}{A Syntax proof example}
 		\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{9}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\Conid{SyntaxPCF}\;\mathbin{:}\;\Conid{Syntaxᵈ}\;\Conid{Type}\;(\Varid{genDataD}\;(\Varid{quote}\;\Conid{PCF})){}\<[E]%
+\>[B]{}\Conid{SyntaxPCF}\;\mathbin{:}\;\Conid{Syntax}\;\Conid{Type}\;(\Varid{genDataD}\;(\Varid{quote}\;\Conid{PCF})){}\<[E]%
 \\
 \>[B]{}\Conid{SyntaxPCF}\;\mathrel{=}\;\anonymous \;{}\<[E]%
 \\
@@ -1075,7 +1078,6 @@ Does \mi{PCF} satisfies \mi{Syntax}?
 \ColumnHook
 \end{hscode}\resethooks
 	\end{exampleblock}
-	\mi{Syntax} proofs in this case are amenable to be generated with elaborator reflection.
 \end{frame}
 
 % \begin{frame}[fragile]{Translation from Semantics to natural looking functions}
@@ -1083,15 +1085,29 @@ Does \mi{PCF} satisfies \mi{Syntax}?
 
 \section{Demo}
 
-\section{Discussion}
+\section{Discussion: towards datatype-generic libraries for syntaxes?}
 
-\begin{frame}[fragile]{Towards datatype-generic libraries for syntaxes?}
+\begin{frame}[fragile]{Future Works \& Issues}
 	\begin{itemize}
-		\item Lack of idividual generic programs?
-		\item Quality of generated codes?
-		\item Expressiveness of \emph{the} single universe (Agda datatypes)?
+		\item Proof automation with elaborator reflection 
+		\item Better user interface
+		\item Applying the framework to more generic libraries
+		\pause
+			\begin{itemize}
+				\item Expressiveness is limited by Agda datatypes as well as the generic universe, a \mi{Syntax} predicate must be defined.
+				\pause
+				\item Even if we can define \mi{Syntax}, the proof could be more complicated, even require programmers to understand the generic universe.
+				\pause
+				\item User-friendliness of using multiple generic libraries at once.
+				\pause
+				\item Are folds and inductions enough?
+			\end{itemize}
+	\pause
+	\item Is it worth it?
 	\end{itemize}
 \end{frame}
+
+\section{Q \& A}
 
 \end{document}
 
