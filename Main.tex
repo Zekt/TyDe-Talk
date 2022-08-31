@@ -1,4 +1,4 @@
-\documentclass[10pt,xcolor=svgnames]{beamer} %Beamer
+\documentclass[10pt,xcolor=svgnames,aspectratio=169]{beamer} %Beamer
 \usepackage{palatino} %font type
 \usefonttheme{metropolis} %Type of slides
 \usefonttheme[onlymath]{serif} %font type Mathematical expressions
@@ -55,8 +55,9 @@
 \newcommand{\mi}[1]{\ensuremath{\mathit{#1}}}
 
 \newunicodechar{→}{\ensuremath{\mathord{\rightarrow}}}
-\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
-\newunicodechar{⊢}{\ensuremath{\vdash}}
+\newunicodechar{⇒}{\ensuremath{\mathord\Rightarrow}}
+\newunicodechar{⊢}{\ensuremath{\mathord\vdash}}
+\newunicodechar{⊨}{\ensuremath{\mathord\vDash}}
 \newunicodechar{∀}{\ensuremath{\forall}}
 \newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
 \newunicodechar{ƛ}{\ensuremath{\lambdaslash}}
@@ -80,6 +81,7 @@
 \newunicodechar{∷}{\ensuremath{::}}
 \newunicodechar{∗}{\ensuremath{\mathord\ast}}
 \newunicodechar{ℓ}{\ensuremath{\ell}}
+
 
 %% ODER: format ==         = "\mathrel{==}"
 %% ODER: format /=         = "\neq "
@@ -365,7 +367,7 @@
 \section{Introduction}
 
 \begin{frame}[fragile]{Motivation}
-\emph{Intrinsic typing} is a common pattern that dependently typed programmers use to define $\uplambda$-calculus with De Bruijn indices.
+\emph{Intrinsic typing} is common for $\uplambda$-calculus with De Bruijn indices.
 \metroset{block=fill}
 \begin{exampleblock}{Example 2.}
 	\aha{%
@@ -377,7 +379,7 @@
 \>[B]{}\mathbf{data}\;\Varid{\char95 ⊢\char95 }\;\mathbin{:}\;\Conid{Context}\;\Varid{→}\;\Conid{Type}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{`\char95 }\;{}\<[10]%
+\>[3]{}\Varid{‵\char95 }\;{}\<[10]%
 \>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{∋}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
@@ -389,16 +391,16 @@
 \>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{⇒}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{B}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{`zero}\;{}\<[10]%
-\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Varid{`ℕ}{}\<[E]%
+\>[3]{}\Varid{‵zero}\;{}\<[10]%
+\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Varid{‵ℕ}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{`suc\char95 }\;{}\<[10]%
-\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Varid{`ℕ}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Varid{`ℕ}{}\<[E]%
+\>[3]{}\Varid{‵suc\char95 }\;{}\<[10]%
+\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Varid{‵ℕ}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Varid{‵ℕ}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Varid{case}\;{}\<[10]%
-\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Varid{`ℕ}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{,}\;\Varid{`ℕ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}{}\<[E]%
+\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Varid{‵ℕ}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{,}\;\Varid{‵ℕ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Varid{μ\char95 }\;{}\<[10]%
@@ -409,12 +411,23 @@
 		\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{8}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{10}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mathbf{data}\;\Conid{Type}\;\mathbin{:}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{α}\;{}\<[8]%
+\>[8]{}\mathbin{:}\;\Conid{Type}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{\char95 ⇒\char95 }\;{}\<[8]%
+\>[8]{}\mathbin{:}\;\Conid{Type}\;\Varid{→}\;\Conid{Type}\;\Varid{→}\;\Conid{Type}{}\<[E]%
+\\[\blanklineskip]%
 \>[B]{}\mathbf{data}\;\Varid{\char95 ⊢\char95 }\;\mathbin{:}\;\Conid{Context}\;\Varid{→}\;\Conid{Type}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{`\char95 }\;{}\<[10]%
+\>[3]{}\Varid{‵\char95 }\;{}\<[10]%
 \>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{∋}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
@@ -431,7 +444,7 @@
 \end{frame}
 
 \begin{frame}[fragile]{Motivation}
-\emph{Intrinsic typing} is a common pattern that dependently typed programmers use to define $\uplambda$-calculus with De Bruijn indices.
+\emph{Intrinsic typing} is common for $\uplambda$-calculus with De Bruijn indices.
 \metroset{block=fill}
 \begin{exampleblock}{Example 2.}
 	\parl{
@@ -443,7 +456,7 @@
 \>[B]{}\mathbf{data}\;\Varid{\char95 ⊢\char95 }\;\mathbin{:}\;\Conid{Context}\;\Varid{→}\;\Conid{Type}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{`\char95 }\;{}\<[10]%
+\>[3]{}\Varid{‵\char95 }\;{}\<[10]%
 \>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{∋}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
@@ -455,16 +468,16 @@
 \>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{⇒}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{B}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{`zero}\;{}\<[10]%
-\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Varid{`ℕ}{}\<[E]%
+\>[3]{}\Varid{‵zero}\;{}\<[10]%
+\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Varid{‵ℕ}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{`suc\char95 }\;{}\<[10]%
-\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Varid{`ℕ}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Varid{`ℕ}{}\<[E]%
+\>[3]{}\Varid{‵suc\char95 }\;{}\<[10]%
+\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Varid{‵ℕ}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Varid{‵ℕ}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Varid{case}\;{}\<[10]%
-\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Varid{`ℕ}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{,}\;\Varid{`ℕ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}{}\<[E]%
+\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Varid{‵ℕ}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{,}\;\Varid{‵ℕ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Varid{μ\char95 }\;{}\<[10]%
@@ -476,7 +489,7 @@
 \end{frame}
 
 \begin{frame}[fragile]{Motivation}
-Scope-safe syntax operations can be defined with the help of intrinsic typing:
+Scope-safe syntax operations:
 	\metroset{block=fill}
 	\begin{exampleblock}{Example 2.1.}
 		\begin{hscode}\SaveRestoreHook
@@ -497,9 +510,9 @@ Scope-safe syntax operations can be defined with the help of intrinsic typing:
 \>[35]{}\Conid{A}\;\Varid{→}\;\Conid{Δ}\;\Varid{⊢}\;{}\<[44]%
 \>[44]{}\Conid{A}){}\<[E]%
 \\
-\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{`}\;\Varid{x})\;{}\<[25]%
+\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{‵}\;\Varid{x})\;{}\<[25]%
 \>[25]{}\mathrel{=}\;{}\<[28]%
-\>[28]{}\Varid{`}\;(\Varid{ρ}\;\Varid{x}){}\<[E]%
+\>[28]{}\Varid{‵}\;(\Varid{ρ}\;\Varid{x}){}\<[E]%
 \\
 \>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{ƛ}\;\Conid{N})\;{}\<[25]%
 \>[25]{}\mathrel{=}\;{}\<[28]%
@@ -509,13 +522,13 @@ Scope-safe syntax operations can be defined with the help of intrinsic typing:
 \>[25]{}\mathrel{=}\;{}\<[28]%
 \>[28]{}(\Varid{rename}\;\Varid{ρ}\;\Conid{L})\;\Varid{·}\;(\Varid{rename}\;\Varid{ρ}\;\Conid{M}){}\<[E]%
 \\
-\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{`zero})\;{}\<[25]%
+\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{‵zero})\;{}\<[25]%
 \>[25]{}\mathrel{=}\;{}\<[28]%
-\>[28]{}\Varid{`zero}{}\<[E]%
+\>[28]{}\Varid{‵zero}{}\<[E]%
 \\
-\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{`suc}\;\Conid{M})\;{}\<[25]%
+\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{‵suc}\;\Conid{M})\;{}\<[25]%
 \>[25]{}\mathrel{=}\;{}\<[28]%
-\>[28]{}\Varid{`suc}\;(\Varid{rename}\;\Varid{ρ}\;\Conid{M}){}\<[E]%
+\>[28]{}\Varid{‵suc}\;(\Varid{rename}\;\Varid{ρ}\;\Conid{M}){}\<[E]%
 \\
 \>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{case}\;\Conid{L}\;\Conid{M}\;\Conid{N})\;{}\<[25]%
 \>[25]{}\mathrel{=}\;{}\<[28]%
@@ -535,7 +548,7 @@ Scope-safe syntax operations can be defined with the help of intrinsic typing:
 \end{frame}
 
 \begin{frame}[fragile]{Motivation}
-Programmers may change/extend the object language they are interested in:
+We may change/extend the object language:
 	\metroset{block=fill}
 		\begin{exampleblock}{Example 3, extending example 2.}
 		\begin{hscode}\SaveRestoreHook
@@ -554,35 +567,35 @@ Programmers may change/extend the object language they are interested in:
 \>[13]{}\mathbin{:}\;\Conid{ℕ}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{Nat}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{\char95 `∗\char95 }\;{}\<[13]%
+\>[3]{}\Varid{\char95 ‵∗\char95 }\;{}\<[13]%
 \>[13]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{Nat}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{Nat}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{Nat}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{`let}\;{}\<[13]%
+\>[3]{}\Varid{‵let}\;{}\<[13]%
 \>[13]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{,}\;\Conid{A}\;\Varid{⊢}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{B}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{`⟨\char95 }\;\Varid{,}\;\Varid{\char95 ⟩}\;{}\<[13]%
-\>[13]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{`×}\;\Conid{B}{}\<[E]%
+\>[3]{}\Varid{‵⟨\char95 }\;\Varid{,}\;\Varid{\char95 ⟩}\;{}\<[13]%
+\>[13]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{‵×}\;\Conid{B}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{`proj₁}\;{}\<[13]%
-\>[13]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{`×}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}{}\<[E]%
+\>[3]{}\Varid{‵proj₁}\;{}\<[13]%
+\>[13]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{‵×}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{`proj₂}\;{}\<[13]%
-\>[13]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{`×}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{B}{}\<[E]%
+\>[3]{}\Varid{‵proj₂}\;{}\<[13]%
+\>[13]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{‵×}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{B}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Varid{case×}\;{}\<[13]%
-\>[13]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{`×}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{,}\;\Conid{A}\;\Varid{,}\;\Conid{B}\;\Varid{⊢}\;\Conid{C}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{C}{}\<[E]%
+\>[13]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{‵×}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{,}\;\Conid{A}\;\Varid{,}\;\Conid{B}\;\Varid{⊢}\;\Conid{C}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{C}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 	\end{exampleblock}
 \end{frame}
 
 \begin{frame}[fragile]{Motivation}
-The syntax operations need to be redefined/extended accordingly:
+Redefine/extend syntax operations:
 	\metroset{block=fill}
 	\begin{exampleblock}{Example 3.1, extending example 2.1.}
 		\begin{hscode}\SaveRestoreHook
@@ -595,25 +608,25 @@ The syntax operations need to be redefined/extended accordingly:
 \>[25]{}\mathrel{=}\;{}\<[28]%
 \>[28]{}\Varid{con}\;\Varid{n}{}\<[E]%
 \\
-\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Conid{M}\;\Varid{`∗}\;\Conid{N})\;{}\<[25]%
+\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Conid{M}\;\Varid{‵∗}\;\Conid{N})\;{}\<[25]%
 \>[25]{}\mathrel{=}\;{}\<[28]%
-\>[28]{}\Varid{rename}\;\Varid{ρ}\;\Conid{M}\;\Varid{`∗}\;\Varid{rename}\;\Varid{ρ}\;\Conid{N}{}\<[E]%
+\>[28]{}\Varid{rename}\;\Varid{ρ}\;\Conid{M}\;\Varid{‵∗}\;\Varid{rename}\;\Varid{ρ}\;\Conid{N}{}\<[E]%
 \\
-\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{`let}\;\Conid{M}\;\Conid{N})\;{}\<[25]%
+\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{‵let}\;\Conid{M}\;\Conid{N})\;{}\<[25]%
 \>[25]{}\mathrel{=}\;{}\<[28]%
-\>[28]{}\Varid{`let}\;(\Varid{rename}\;\Varid{ρ}\;\Conid{M})\;(\Varid{rename}\;(\Varid{ext}\;\Varid{ρ})\;\Conid{N}){}\<[E]%
+\>[28]{}\Varid{‵let}\;(\Varid{rename}\;\Varid{ρ}\;\Conid{M})\;(\Varid{rename}\;(\Varid{ext}\;\Varid{ρ})\;\Conid{N}){}\<[E]%
 \\
-\>[B]{}\Varid{rename}\;\Varid{ρ}\;\Varid{`⟨}\;\Conid{M}\;\Varid{,}\;\Conid{N}\;\Varid{⟩}\;{}\<[25]%
+\>[B]{}\Varid{rename}\;\Varid{ρ}\;\Varid{‵⟨}\;\Conid{M}\;\Varid{,}\;\Conid{N}\;\Varid{⟩}\;{}\<[25]%
 \>[25]{}\mathrel{=}\;{}\<[28]%
-\>[28]{}\Varid{`⟨}\;\Varid{rename}\;\Varid{ρ}\;\Conid{M}\;\Varid{,}\;\Varid{rename}\;\Varid{ρ}\;\Conid{N}\;\Varid{⟩}{}\<[E]%
+\>[28]{}\Varid{‵⟨}\;\Varid{rename}\;\Varid{ρ}\;\Conid{M}\;\Varid{,}\;\Varid{rename}\;\Varid{ρ}\;\Conid{N}\;\Varid{⟩}{}\<[E]%
 \\
-\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{`proj₁}\;\Conid{L})\;{}\<[25]%
+\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{‵proj₁}\;\Conid{L})\;{}\<[25]%
 \>[25]{}\mathrel{=}\;{}\<[28]%
-\>[28]{}\Varid{`proj₁}\;(\Varid{rename}\;\Varid{ρ}\;\Conid{L}){}\<[E]%
+\>[28]{}\Varid{‵proj₁}\;(\Varid{rename}\;\Varid{ρ}\;\Conid{L}){}\<[E]%
 \\
-\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{`proj₂}\;\Conid{L})\;{}\<[25]%
+\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{‵proj₂}\;\Conid{L})\;{}\<[25]%
 \>[25]{}\mathrel{=}\;{}\<[28]%
-\>[28]{}\Varid{`proj₂}\;(\Varid{rename}\;\Varid{ρ}\;\Conid{L}){}\<[E]%
+\>[28]{}\Varid{‵proj₂}\;(\Varid{rename}\;\Varid{ρ}\;\Conid{L}){}\<[E]%
 \\
 \>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{case×}\;\Conid{L}\;\Conid{M})\;{}\<[25]%
 \>[25]{}\mathrel{=}\;{}\<[28]%
@@ -627,7 +640,7 @@ The syntax operations need to be redefined/extended accordingly:
 \end{frame}
 
 \begin{frame}[fragile]{Motivation}
-All the other operations are to be repeated:
+Other repeating operations:
 		\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{18}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -648,13 +661,13 @@ All the other operations are to be repeated:
 \end{frame}
 
 \begin{frame}[fragile]{Existing work}
-  There have been generic libraries providing constructions that can be specialised for a whole family of syntaxes with binders~\footcite{Allais-generic-syntax}\footcite{Fiore-SOAS-Agda}\footcite{Ahrens-typed-abstract-syntax}.
+  There are generic libraries for a family/families of syntaxes with binders~\footcite{Allais-generic-syntax}\footcite{Ahrens-typed-abstract-syntax}.
 
-	We take a closer look on Allais et al.'s approach\footnotemark[1] published at \break ICFP '18.
+We improve upon Allais et al.'s approach\footnotemark[1] published at ICFP '18.
 \end{frame}
 
 \begin{frame}[fragile]{Existing work by Allais et al.}
-	Allais et al. present a universe of syntaxes \mi{Desc},
+	Allais et al.'s \mi{Desc}:
 	\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{9}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -663,61 +676,86 @@ All the other operations are to be repeated:
 \>[B]{}\mathbf{data}\;\Conid{Desc}\;(\Conid{I}\;\mathbin{:}\;\Conid{Set})\;\mathbin{:}\;\Conid{Set₁}\;\mathbf{where}{}\<[E]%
 \\
 \>[B]{}\hsindent{9}{}\<[9]%
-\>[9]{}\Varid{‘σ}\;{}\<[13]%
+\>[9]{}\Varid{‵σ}\;{}\<[13]%
 \>[13]{}\mathbin{:}\;(\Conid{A}\;\mathbin{:}\;\Conid{Set})\;\Varid{→}\;(\Conid{A}\;\Varid{→}\;\Conid{Desc}\;\Conid{I})\;\Varid{→}\;\Conid{Desc}\;\Conid{I}{}\<[E]%
 \\
 \>[B]{}\hsindent{9}{}\<[9]%
-\>[9]{}\Varid{‘X}\;{}\<[13]%
+\>[9]{}\Varid{‵X}\;{}\<[13]%
 \>[13]{}\mathbin{:}\;\Conid{List}\;\Conid{I}\;\Varid{→}\;\Conid{I}\;\Varid{→}\;\Conid{Desc}\;\Conid{I}\;\Varid{→}\;\Conid{Desc}\;\Conid{I}{}\<[E]%
 \\
 \>[B]{}\hsindent{9}{}\<[9]%
-\>[9]{}\Varid{‘▪}\;{}\<[13]%
+\>[9]{}\Varid{‵▪}\;{}\<[13]%
 \>[13]{}\mathbin{:}\;\Conid{I}\;\Varid{→}\;\Conid{Desc}\;\Conid{I}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 \end{frame}
 
 \begin{frame}[fragile]{Existing work by Allais et al.}
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
 Simply typed $\uplambda$-calculus
-	\begin{hscode}\SaveRestoreHook
-\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\mathbf{data}\;\Conid{STLC}\;\mathbin{:}\;\Conid{Type}\;\Varid{→}\;\Conid{List}\;\Conid{Type}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
-\\
-\>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{‵var}\;\mathbin{:}\;\Conid{Var}\;\Varid{σ}\;\Conid{Γ}\;\Varid{→}\;\Conid{STLC}\;\Varid{σ}\;\Conid{Γ}{}\<[E]%
-\\
-\>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{‵app}\;\mathbin{:}\;\Conid{STLC}\;(\Varid{σ}\;\Varid{‵→}\;\Varid{τ})\;\Conid{Γ}\;\Varid{→}\;\Conid{STLC}\;\Varid{σ}\;\Conid{Γ}\;\Varid{→}\;\Conid{STLC}\;\Varid{τ}\;\Conid{Γ}{}\<[E]%
-\\
-\>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{‵lam}\;\mathbin{:}\;\Conid{STLC}\;\Varid{τ}\;(\Varid{σ}\;\Varid{∷}\;\Conid{Γ})\;\Varid{→}\;\Conid{STLC}\;(\Varid{σ}\;\Varid{‵→}\;\Varid{τ})\;\Conid{Γ}{}\<[E]%
-\ColumnHook
-\end{hscode}\resethooks
-	\pause
-can be encoded in \mi{Desc}:
-	\metroset{block=fill}
-	\begin{exampleblock}{Example 4, description of simply typed $\uplambda$-calculus.}
 	\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{9}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\Conid{STLC}\;\mathbin{:}\;\Conid{Desc}\;\Conid{Type}{}\<[E]%
+\>[B]{}\mathbf{data}\;\Conid{STLC}\;\mathbin{:}\;\Conid{Type}\;\Varid{→}\;\Conid{Context}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
 \\
-\>[B]{}\Conid{STLC}\;\mathrel{=}\;\Varid{σ}\;\Varid{‵STLC}\;\Varid{λ}\;\mathbf{where}{}\<[E]%
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{‵var}\;{}\<[9]%
+\>[9]{}\mathbin{:}\;\Conid{Var}\;\Varid{σ}\;\Conid{Γ}\;{}\<[E]%
+\\
+\>[9]{}\Varid{→}\;\Conid{STLC}\;\Varid{σ}\;\Conid{Γ}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{‵app}\;{}\<[9]%
+\>[9]{}\mathbin{:}\;\Conid{STLC}\;(\Varid{σ}\;\Varid{⇒}\;\Varid{τ})\;\Conid{Γ}\;\Varid{→}\;\Conid{STLC}\;\Varid{σ}\;\Conid{Γ}\;{}\<[E]%
+\\
+\>[9]{}\Varid{→}\;\Conid{STLC}\;\Varid{τ}\;\Conid{Γ}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{‵lam}\;{}\<[9]%
+\>[9]{}\mathbin{:}\;\Conid{STLC}\;\Varid{τ}\;(\Varid{σ}\;\Varid{∷}\;\Conid{Γ})\;{}\<[E]%
+\\
+\>[9]{}\Varid{→}\;\Conid{STLC}\;(\Varid{σ}\;\Varid{⇒}\;\Varid{τ})\;\Conid{Γ}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{column}
+\begin{column}{0.5\textwidth}
+	\pause
+encoded in \mi{Desc}:
+	\metroset{block=fill}
+	\begin{exampleblock}{Example 4, description of simply typed $\uplambda$-calculus.}
+	\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{9}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Conid{STLCD}\;\mathbin{:}\;\Conid{Desc}\;\Conid{Type}{}\<[E]%
+\\
+\>[B]{}\Conid{STLCD}\;\mathrel{=}\;\Varid{‵σ}\;\Varid{‵STLC}\;\Varid{λ}\;\mathbf{where}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}(\Conid{App}\;{}\<[9]%
-\>[9]{}\Varid{i}\;\Varid{j})\;\Varid{→}\;\Varid{‵X}\;\Varid{[]}\;(\Varid{i}\;\Varid{‵→}\;\Varid{j})\;(\Varid{‵X}\;\Varid{[]}\;\Varid{i}\;(\Varid{▪}\;\Varid{j})){}\<[E]%
+\>[9]{}\Varid{i}\;\Varid{j})\;\Varid{→}\;{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\Varid{‵X}\;\Varid{[]}\;(\Varid{i}\;\Varid{⇒}\;\Varid{j})\;(\Varid{‵X}\;\Varid{[]}\;\Varid{i}\;(\Varid{▪}\;\Varid{j})){}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}(\Conid{Lam}\;{}\<[9]%
-\>[9]{}\Varid{i}\;\Varid{j})\;\Varid{→}\;\Varid{‵X}\;(\Varid{i}\;\Varid{∷}\;\Varid{[]})\;\Varid{j}\;(\Varid{▪}\;(\Varid{i}\;\Varid{‵→}\;\Varid{j})){}\<[E]%
+\>[9]{}\Varid{i}\;\Varid{j})\;\Varid{→}\;{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\Varid{‵X}\;(\Varid{i}\;\Varid{∷}\;\Varid{[]})\;\Varid{j}\;(\Varid{▪}\;(\Varid{i}\;\Varid{⇒}\;\Varid{j})){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Conid{STLC}\;\mathrel{=}\;\Conid{Tm}\;\Conid{STLCD}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 	\end{exampleblock}
+\end{column}
+\end{columns}
 \end{frame}
 
 \begin{frame}[fragile]{Existing work by Allais et al.}
@@ -728,16 +766,6 @@ can be encoded in \mi{Desc}:
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{9}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\mathbf{data}\;\Conid{Type}\;\mathbin{:}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
-\\
-\>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{α}\;{}\<[9]%
-\>[9]{}\mathbin{:}\;\Conid{Type}{}\<[E]%
-\\
-\>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{\char95 ‵→\char95 }\;{}\<[9]%
-\>[9]{}\mathbin{:}\;\Conid{Type}\;\Varid{→}\;\Conid{Type}\;\Varid{→}\;\Conid{Type}{}\<[E]%
-\\[\blanklineskip]%
 \>[B]{}\mathbf{data}\;\Varid{‵STLC}\;\mathbin{:}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
@@ -749,22 +777,21 @@ can be encoded in \mi{Desc}:
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}(\Conid{App}\;{}\<[9]%
-\>[9]{}\Varid{i}\;\Varid{j})\;\Varid{→}\;\Varid{‵X}\;\Varid{[]}\;(\Varid{i}\;\Varid{‵→}\;\Varid{j})\;(\Varid{‵X}\;\Varid{[]}\;\Varid{i}\;(\Varid{▪}\;\Varid{j})){}\<[E]%
+\>[9]{}\Varid{i}\;\Varid{j})\;\Varid{→}\;\Varid{‵X}\;\Varid{[]}\;(\Varid{i}\;\Varid{⇒}\;\Varid{j})\;(\Varid{‵X}\;\Varid{[]}\;\Varid{i}\;(\Varid{▪}\;\Varid{j})){}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}(\Conid{Lam}\;{}\<[9]%
-\>[9]{}\Varid{i}\;\Varid{j})\;\Varid{→}\;\Varid{‵X}\;(\Varid{i}\;\Varid{∷}\;\Varid{[]})\;\Varid{j}\;(\Varid{▪}\;(\Varid{i}\;\Varid{‵→}\;\Varid{j})){}\<[E]%
+\>[9]{}\Varid{i}\;\Varid{j})\;\Varid{→}\;\Varid{‵X}\;(\Varid{i}\;\Varid{∷}\;\Varid{[]})\;\Varid{j}\;(\Varid{▪}\;(\Varid{i}\;\Varid{⇒}\;\Varid{j})){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 	\end{exampleblock}
 \end{frame}
 
 \begin{frame}[fragile]{Existing work by Allais et al.}
-	Generic programs are described by \mi{Semantics} records.
+	Generic programs are \mi{Semantics} records.
 
-	They can be realized as functions on the fixpoint constructor \mi{Tm} via \mi{semantics}.
+	Functions are realized on fixpoints \mi{Tm} via \mi{semantics}.
 	\metroset{block=fill}
-	\begin{exampleblock}{Example 5, generic rename function.}
 	\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{35}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -772,31 +799,18 @@ can be encoded in \mi{Desc}:
 \>[B]{}\Conid{Renaming}\;\mathbin{:}\;\Varid{∀}\;\{\mskip1.5mu \Varid{d}\;\mathbin{:}\;\Conid{Desc}\;\Conid{I}\mskip1.5mu\}\;\Varid{→}\;\Conid{Semantics}\;\Varid{d}\;\Conid{Var}\;(\Conid{Tm}\;\Varid{d}){}\<[E]%
 \\[\blanklineskip]%
 \>[B]{}\Varid{rename}\;\mathbin{:}\;\Varid{∀}\;\{\mskip1.5mu \Varid{d}\;\mathbin{:}\;\Conid{Desc}\;\Conid{I}\mskip1.5mu\}\;\Varid{→}\;(\Varid{∀}\;\{\mskip1.5mu \Varid{i}\mskip1.5mu\}\;{}\<[35]%
-\>[35]{}\Varid{→}\;\Conid{Var}\;\Varid{i}\;\Conid{Γ}\;\Varid{→}\;\Conid{Var}\;\Varid{i}\;\Conid{Δ})\;{}\<[E]%
+\>[35]{}\Varid{→}\;\Conid{Var}\;\Varid{i}\;\Conid{Γ‘}\;\Varid{→}\;\Conid{Var}\;\Varid{i}\;\Conid{Δ})\;{}\<[E]%
 \\
 \>[35]{}\Varid{→}\;\Conid{Tm}\;\Varid{d}\;\Varid{j}\;\Conid{Γ}\;\Varid{→}\;\Conid{Tm}\;\Varid{d}\;\Varid{j}\;\Conid{Δ}{}\<[E]%
 \\
 \>[B]{}\Varid{rename}\;\Varid{ρ}\;\Varid{t}\;\mathrel{=}\;\Varid{semantics}\;\Conid{Renaming}\;\Varid{ρ}\;\Varid{t}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
-	\end{exampleblock}
-\mi{rename} is generic as it can be applied to fixpoints of any description (e.g. $\mi{Tm}\ \mi{STLC}$).
+\mi{rename} can be applied to fixpoints of any description (e.g. $\mi{Tm}\ \mi{STLC}$).
 \end{frame}
 
 \begin{frame}[fragile]{Motivation cont.}
-	Problems with applying standard datatype-generic programming to syntax-generic operations:
-	\pause
-	\begin{enumerate}
-		\item datatype/function definitions are non-intuitive (no more beautiful typing rules \& IDE supports!),
-		\pause
-		\item requiring the programmer to understand the syntax universe, and
-		\pause
-		\item interoperability: difficult (if not impossible) to work with existing libraries or other generic libraries.
-	\end{enumerate}
-\end{frame}
-
-\begin{frame}[fragile]{Motivation cont.}
-	Programmers prefer ``natural'' datatype and function definitions,
+	Programmers prefer ‵‵natural'' datatype and functions,
 	\aha{
 		\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -817,9 +831,9 @@ can be encoded in \mi{Desc}:
 \>[35]{}\Conid{A}\;\Varid{→}\;\Conid{Δ}\;\Varid{⊢}\;{}\<[44]%
 \>[44]{}\Conid{A}){}\<[E]%
 \\
-\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{`}\;\Varid{x})\;{}\<[25]%
+\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{‵}\;\Varid{x})\;{}\<[25]%
 \>[25]{}\mathrel{=}\;{}\<[28]%
-\>[28]{}\Varid{`}\;(\Varid{ρ}\;\Varid{x}){}\<[E]%
+\>[28]{}\Varid{‵}\;(\Varid{ρ}\;\Varid{x}){}\<[E]%
 \\
 \>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{ƛ}\;\Conid{N})\;{}\<[25]%
 \>[25]{}\mathrel{=}\;{}\<[28]%
@@ -861,7 +875,7 @@ can be encoded in \mi{Desc}:
 \>[B]{}\mathbf{data}\;\Varid{\char95 ⊢\char95 }\;\mathbin{:}\;\Conid{Context}\;\Varid{→}\;\Conid{Type}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{`\char95 }\;{}\<[10]%
+\>[3]{}\Varid{‵\char95 }\;{}\<[10]%
 \>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{∋}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
@@ -884,11 +898,11 @@ can be encoded in \mi{Desc}:
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}(\Conid{App}\;{}\<[9]%
-\>[9]{}\Varid{i}\;\Varid{j})\;\Varid{→}\;\Varid{‵X}\;\Varid{[]}\;(\Varid{i}\;\Varid{‵→}\;\Varid{j})\;(\Varid{‵X}\;\Varid{[]}\;\Varid{i}\;(\Varid{▪}\;\Varid{j})){}\<[E]%
+\>[9]{}\Varid{i}\;\Varid{j})\;\Varid{→}\;\Varid{‵X}\;\Varid{[]}\;(\Varid{i}\;\Varid{⇒}\;\Varid{j})\;(\Varid{‵X}\;\Varid{[]}\;\Varid{i}\;(\Varid{▪}\;\Varid{j})){}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}(\Conid{Lam}\;{}\<[9]%
-\>[9]{}\Varid{i}\;\Varid{j})\;\Varid{→}\;\Varid{‵X}\;(\Varid{i}\;\Varid{∷}\;\Varid{[]})\;\Varid{j}\;(\Varid{▪}\;(\Varid{i}\;\Varid{‵→}\;\Varid{j})){}\<[E]%
+\>[9]{}\Varid{i}\;\Varid{j})\;\Varid{→}\;\Varid{‵X}\;(\Varid{i}\;\Varid{∷}\;\Varid{[]})\;\Varid{j}\;(\Varid{▪}\;(\Varid{i}\;\Varid{⇒}\;\Varid{j})){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 	}
@@ -915,9 +929,9 @@ can be encoded in \mi{Desc}:
 \>[35]{}\Conid{A}\;\Varid{→}\;\Conid{Δ}\;\Varid{⊢}\;{}\<[44]%
 \>[44]{}\Conid{A}){}\<[E]%
 \\
-\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{`}\;\Varid{x})\;{}\<[25]%
+\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{‵}\;\Varid{x})\;{}\<[25]%
 \>[25]{}\mathrel{=}\;{}\<[28]%
-\>[28]{}\Varid{`}\;(\Varid{ρ}\;\Varid{x}){}\<[E]%
+\>[28]{}\Varid{‵}\;(\Varid{ρ}\;\Varid{x}){}\<[E]%
 \\
 \>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{ƛ}\;\Conid{N})\;{}\<[25]%
 \>[25]{}\mathrel{=}\;{}\<[28]%
@@ -952,13 +966,27 @@ can be encoded in \mi{Desc}:
 \end{hscode}\resethooks
 \end{frame}
 
+\begin{frame}[fragile]{Motivation cont.}
+	Problems with syntax universes:
+	\pause
+	\begin{enumerate}
+		\item Readability
+		\pause
+		\item Extra work for programmers
+		\pause
+		\item Interoperability with existing tools/IDEs
+		\pause
+		\item Interoperability with existing libraries
+	\end{enumerate}
+\end{frame}
+
 \section{Elaborator Reflection to the Rescue}
 
 \begin{frame}[fragile]{Elaborator Reflection to the Rescue}
-	In our published work at ICFP, we have provided:
+	``Datatype-Generic Programming Meets Elaborator Reflection'', to be presented at 15:50, Tuesday:
 	\pause
 	\begin{itemize}
-		\item a description \mi{DataD} generic enough for any Agda's inductive datatypes,
+		\item a generic description \mi{DataD} for Agda's inductive datatypes,
 		\pause
 		\item generic program descriptions \mi{FoldP} for folds (and \mi{IndP} for inductions),
 		\pause
@@ -969,7 +997,7 @@ can be encoded in \mi{Desc}:
 \end{frame}
 
 \begin{frame}[fragile]{Motivation cont.}
-	We define:
+	We further define:
 	\begin{itemize}
 		\item a predicate \mi{Syntax} on \mi{DataD} that captures a subset equivalent to \mi{Desc}.
 		\item a function \mi{SemP} that generates descriptions (typed \mi{FoldP}) of generic fold operations, given proofs of the predicate.
@@ -1009,7 +1037,7 @@ Does \mi{PCF} satisfies \mi{Syntax}?
 \column{10}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{27}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\mathbf{data}\;\Conid{PCF}\;\mathbin{:}\;\Conid{Type}\;\Varid{→}\;\Conid{List}\;\Conid{Type}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
+\>[B]{}\mathbf{data}\;\Conid{PCF}\;\mathbin{:}\;\Conid{Type}\;\Varid{→}\;\Conid{Context}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Varid{‵var}\;{}\<[10]%
@@ -1017,12 +1045,12 @@ Does \mi{PCF} satisfies \mi{Syntax}?
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Varid{‵app}\;{}\<[10]%
-\>[10]{}\mathbin{:}\;\Conid{PCF}\;(\Varid{σ}\;\Varid{‵→}\;\Varid{τ})\;\Conid{Γ}\;\Varid{→}\;\Conid{PCF}\;\Varid{σ}\;\Conid{Γ}\;\Varid{→}\;\Conid{PCF}\;\Varid{τ}\;\Conid{Γ}{}\<[E]%
+\>[10]{}\mathbin{:}\;\Conid{PCF}\;(\Varid{σ}\;\Varid{⇒}\;\Varid{τ})\;\Conid{Γ}\;\Varid{→}\;\Conid{PCF}\;\Varid{σ}\;\Conid{Γ}\;\Varid{→}\;\Conid{PCF}\;\Varid{τ}\;\Conid{Γ}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Varid{‵lam}\;{}\<[10]%
 \>[10]{}\mathbin{:}\;\Conid{PCF}\;\Varid{τ}\;(\Varid{σ}\;\Varid{∷}\;\Conid{Γ})\;{}\<[27]%
-\>[27]{}\Varid{→}\;\Conid{PCF}\;(\Varid{σ}\;\Varid{‵→}\;\Varid{τ})\;\Conid{Γ}{}\<[E]%
+\>[27]{}\Varid{→}\;\Conid{PCF}\;(\Varid{σ}\;\Varid{⇒}\;\Varid{τ})\;\Conid{Γ}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Varid{‵zero}\;{}\<[10]%
@@ -1098,7 +1126,7 @@ Does \mi{PCF} satisfies \mi{Syntax}?
 				\pause
 				\item Even if we can define \mi{Syntax}, the proof could be more complicated, even require programmers to understand the generic universe.
 				\pause
-				\item User-friendliness of using multiple generic libraries at once.
+				\item Obstacles of using multiple generic libraries at once.
 				\pause
 				\item Are folds and inductions enough?
 			\end{itemize}
