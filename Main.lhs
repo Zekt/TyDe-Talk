@@ -1,4 +1,4 @@
-\documentclass[10pt,xcolor=svgnames,aspectratio=169]{beamer} %Beamer
+\documentclass[10pt,xcolor=svgnames,aspectratio=169,notes]{beamer} %Beamer
 \usepackage{palatino} %font type
 \usefonttheme{metropolis} %Type of slides
 \usefonttheme[onlymath]{serif} %font type Mathematical expressions
@@ -21,24 +21,9 @@
 \setbeamercolor{section in toc}{fg=NavyBlue!40!Black} %Color of the text in the table of contents (toc)
 
 \usepackage[utf8]{inputenc}
-% \usepackage{amsmath,amssymb}
 \usepackage[Symbol]{upgreek}
 \usepackage{newtxmath}
-% \usepackage{slashed}
-% \usepackage[capitalise,noabbrev]{cleveref}
-% \usepackage{relsize}
-% \usepackage{caption}
-% \usepackage{subcaption}
 \usepackage{multicol}
-% \usepackage{booktabs}
-% \usepackage[scale=2]{ccicons}
-% \usepackage{pgfplots}
-% \usepgfplotslibrary{dateplot}
-% \usepackage{geometry}
-% \usepackage{xspace}
-% \usepackage{comment}
-% \usepackage{ucs}
-% \usepackage{bbm}
 \usepackage[style=authortitle,backend=biber]{biblatex}
 \addbibresource{bib.bib}
 \usepackage[greek,english]{babel}
@@ -101,17 +86,22 @@
 
 \metroset{titleformat frame=smallcaps} %This changes the titles for small caps
 
+\note{Hello everyone, my name is Tzu-Chi, I am a research assistant from Academia Sinica in Taiwan.
+Today I will be talking about the joint work of my advisor's am mine, it's "Syntax-generic Operations, Reflectively Reified".}
+
 \begin{frame}[fragile]{Outline}
 \setbeamertemplate{section in toc}[sections numbered] %This is numbering the sections
 \tableofcontents[hideallsubsections] %You can comment this line if you want to show the subsections in the table of contents
 \end{frame}
 
+\note{Firstly, I will introduce some backgrounds and our motivations, including the existing work we base on. In general, we apply the techniques we introduced in our another work, "Datatype-Generic Programming Meets Elaborator Reflection", which Josh will present on Tuesday. We apply the techniques in that work on a common problem for depentely typed programmers. I will show you a demo if we have time, and most importantly, we want to know your opinions on it.}
+
 \section{Introduction}
+
+\note{Let's start!}
 
 \begin{frame}[fragile]{Motivation}
 \emph{Intrinsic typing} is common for $\uplambda$-calculus with De Bruijn indices.
-\metroset{block=fill}
-\begin{exampleblock}{Example 2.}
 	\aha{%
 		\begin{code}
 data _⊢_ : Context → Type → Set where
@@ -135,13 +125,12 @@ data _⊢_ : Context → Type → Set where
   _·_    : Γ ⊢ A ⇒ B → Γ ⊢ A → Γ ⊢ B
 		\end{code}
 	}
-\end{exampleblock}
 \end{frame}
+
+\note{Here is an example of a language defined in Agda. It's simply-typed lambda calculus, and with the help of intrinsic typing, the syntax definition is very concise. Here \mi{Context} is List of Type. There are three constructors, each corresponding to the variable, abstraction, and application rule.}
 
 \begin{frame}[fragile]{Motivation}
 \emph{Intrinsic typing} is common for $\uplambda$-calculus with De Bruijn indices.
-\metroset{block=fill}
-\begin{exampleblock}{Example 2.}
 	\parl{
 	\begin{code}
 data _⊢_ : Context → Type → Set where
@@ -154,13 +143,12 @@ data _⊢_ : Context → Type → Set where
   μ_     : Γ , A ⊢ A → Γ ⊢ A
 	\end{code}
 	}
-\end{exampleblock}
 \end{frame}
+
+\note{Let's extend the example, we might want natural number primitives in our language, so we extend the Type datatype, we also add rules for branching and recursion.}
 
 \begin{frame}[fragile]{Motivation}
 Scope-safe syntax operations:
-	\metroset{block=fill}
-	\begin{exampleblock}{Example 2.1.}
 		\begin{code}
 rename : ∀ {Γ Δ}  → (∀ {A} → Γ ∋  A → Δ ∋  A)
                   → (∀ {A} → Γ ⊢  A → Δ ⊢  A)
@@ -174,13 +162,12 @@ rename ρ (case L M N)   =  case  (rename ρ L)
                                  (rename (ext ρ) N)
 rename ρ (μ N)          =  μ (rename (ext ρ) N)
 		\end{code}
-	\end{exampleblock}
 \end{frame}
+
+\note{There are some common operations for this kind of language, for example, \mi{rename} is common for languages with De Bruijn indices. \mi{rename} says that if there's a mapping from every element in a context $\varGamma$ to the other $\varDelta$, we can always find a mapping from every term that is typed in $\varGamma$ to a term typed in $\varDelta$.}
 
 \begin{frame}[fragile]{Motivation}
 We may change/extend the object language:
-	\metroset{block=fill}
-		\begin{exampleblock}{Example 3, extending example 2.}
 		\begin{code}
 data _⊢_ : Context → Type → Set where
 	...
@@ -192,13 +179,12 @@ data _⊢_ : Context → Type → Set where
   ‵proj₂    : Γ ⊢ A ‵× B → Γ ⊢ B
   case×     : Γ ⊢ A ‵× B → Γ , A , B ⊢ C → Γ ⊢ C
 		\end{code}
-	\end{exampleblock}
 \end{frame}
+
+\note{What if we extend the language even further? Here we add even more rules to the language we just defined.}
 
 \begin{frame}[fragile]{Motivation}
 Redefine/extend syntax operations:
-	\metroset{block=fill}
-	\begin{exampleblock}{Example 3.1, extending example 2.1.}
 		\begin{code}
 rename ρ (con n)        =  con n
 rename ρ (M ‵∗ N)       =  rename ρ M ‵∗ rename ρ N
@@ -209,8 +195,9 @@ rename ρ (‵proj₂ L)     =  ‵proj₂ (rename ρ L)
 rename ρ (case× L M)    =  case×  (rename ρ L)
                                   (rename (ext (ext ρ)) M)
 		\end{code}
-	\end{exampleblock}
 \end{frame}
+
+\note{The \mi{rename} function must be extended or redefined everytime we make some changes to the object language. Here we can start to notice the pattern of \mi{rename}. For every subterm in a term we call \mi{rename} recursively, and modify the mapping function with \mi{ext} if there are context extensions. The result subterms are then constructed by the same constructor they are pattern matched from. We see here a pattern of fold operation. We probaly would want to apply generic programming here to avoid defining such operations every time.}
 
 \begin{frame}[fragile]{Motivation}
 Other repeating operations:
@@ -226,11 +213,15 @@ print : Γ ⊢ A → String
 		\end{code}
 \end{frame}
 
+\note{There are other repeating operations that must be redefined for every change in the object language, if you have already defined a language with multiple such operations, you probaly would wish for some kind of automations.}
+
 \begin{frame}[fragile]{Existing work}
   There are generic libraries for a family/families of syntaxes with binders~\footcite{Allais-generic-syntax}\footcite{Ahrens-typed-abstract-syntax}.
 
 We improve upon Allais et al.'s approach\footnotemark[1] published at ICFP '18.
 \end{frame}
+
+\note{There have been some generic libraries aiming for eliminating such repetitions, but they are not widely adopted. We introduce a work by Allais et al. and illustrate what we think is limiting in their and others' generic libraries, so later we can show how we can improve upon their work and others alike.}
 
 \begin{frame}[fragile]{Existing work by Allais et al.}
 	Allais et al.'s \mi{Desc}:
@@ -241,6 +232,8 @@ data Desc (I : Set) : Set₁ where
 	‵▪  : I → Desc I
 	\end{code}
 \end{frame}
+
+\note{Allais et al. provides a universe that describes a certain kind of syntax. It's worth mentioning that all such universes are limiting in natural, because we don't know what kind of syntax the researchers would define, we can only presume. In this case, they have presumed that the syntax to be described must have a type and a context, while allowing binders to extend the context. This restriction is necessary and important, we will come back to it later.}
 
 \begin{frame}[fragile]{Existing work by Allais et al.}
 \begin{columns}[T]
@@ -261,9 +254,10 @@ data STLC : Type → Context → Set where
 \begin{column}{0.5\textwidth}
 	\pause
 encoded in \mi{Desc}:
-	\metroset{block=fill}
-	\begin{exampleblock}{Example 4, description of simply typed $\uplambda$-calculus.}
 	\begin{code}
+data ‵STLC : Set where
+  App Lam : Type → Type → ‵STLC
+
 STLCD : Desc Type
 STLCD = ‵σ ‵STLC λ where
   (App  i j) →
@@ -271,53 +265,92 @@ STLCD = ‵σ ‵STLC λ where
   (Lam  i j) →
     ‵X (i ∷ []) j (▪ (i ⇒ j))
 
-STLC = Tm STLCD
+STLC' = Tm STLCD
 	\end{code}
-	\end{exampleblock}
 \end{column}
 \end{columns}
+\pause
+$$\mi{STLC} \cong \mi{STLC'}$$
 \end{frame}
 
-\begin{frame}[fragile]{Existing work by Allais et al.}
-	\metroset{block=fill}
-	\begin{exampleblock}{Example 4 in full.}
-	\begin{code}
-data ‵STLC : Set where
-  App Lam : Type → Type → ‵STLC
+\note{In most such generic libraries, programmers are required to encode their syntax in the given description. For example, a simply-typed lambda calculus here, \mi{Tm} is a type constructor that takes the fixpoint of the functor of a description. We may prove that a syntax defined as a isolated datatype is isomorphic to the fixpoint of some functor, but the programmer shall never use the isolated datatype definition again, what happens in the generic universe stays in that generic universe. }
 
-STLC : Desc Type
-STLC = σ ‵STLC λ where
-  (App  i j) → ‵X [] (i ⇒ j) (‵X [] i (▪ j))
-  (Lam  i j) → ‵X (i ∷ []) j (▪ (i ⇒ j))
-	\end{code}
-	\end{exampleblock}
-\end{frame}
+% \begin{frame}[fragile]{Existing work by Allais et al.}
+% 	\begin{code}
+% STLC : Desc Type
+% STLC = σ ‵STLC λ where
+%   (App  i j) → ‵X [] (i ⇒ j) (‵X [] i (▪ j))
+%   (Lam  i j) → ‵X (i ∷ []) j (▪ (i ⇒ j))
+% 	\end{code}
+% \end{frame}
 
 \begin{frame}[fragile]{Existing work by Allais et al.}
 	Generic programs are \mi{Semantics} records.
 
 	Functions are realized on fixpoints \mi{Tm} via \mi{semantics}.
-	\metroset{block=fill}
 	\begin{code}
 Renaming : ∀ {d : Desc I} → Semantics d Var (Tm d)
 
 rename : ∀ {d : Desc I} → (∀ {i}  → Var i Γ‘ → Var i Δ)
                                   → Tm d j Γ → Tm d j Δ
-rename ρ t = semantics Renaming ρ t
+rename = semantics Renaming
 	\end{code}
 \mi{rename} can be applied to fixpoints of any description (e.g. $\mi{Tm}\ \mi{STLC}$).
 \end{frame}
 
+\note{Likewise, generic functions in these libraries require specific descriptions, such that we can define functions that work for a whole family of syntaxes. In this case, the sementics function with lower case S is used to interpret the semantics description with upper case S, and we can obtain a rename function that is very similar to what we have defined previously. You can see it is generic as it works on Tm d for every d.}
+
+% \begin{frame}[fragile]{Motivation cont.}
+% 	Programmers prefer ``natural'' datatype and functions,
+% 	\aha{
+% 		\begin{code}
+% rename : ∀ {Γ Δ}  → (∀ {A} → Γ ∋  A → Δ ∋  A)
+%                   → (∀ {A} → Γ ⊢  A → Δ ⊢  A)
+% rename ρ (‵ x)          =  ‵ (ρ x)
+% rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
+% rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)
+% 
+% Renaming : Semantics Var Lam
+% Renaming = record
+%   { th^V  = th^Var
+%   ; var   = ‘var
+%   ; app   = ‘app
+%   ; lam   = λ b → ‘lam (b weaken z) }
+% rename = semantics Renaming
+% 		\end{code}
+% 	}{
+% 		\begin{code}
+% data _⊢_ : Context → Type → Set where
+%   ‵_     : Γ ∋ A → Γ ⊢ A
+%   ƛ_     : Γ , A ⊢ B → Γ ⊢ A ⇒ B
+%   _·_    : Γ ⊢ A ⇒ B → Γ ⊢ A → Γ ⊢ B
+% 		\end{code}
+% 	\begin{code}
+% STLC : Desc Type
+% STLC = σ ‵STLC λ where
+%   (App  i j) → ‵X [] (i ⇒ j) (‵X [] i (▪ j))
+%   (Lam  i j) → ‵X (i ∷ []) j (▪ (i ⇒ j))
+% 	\end{code}
+% 	}
+% \end{frame}
+
 \begin{frame}[fragile]{Motivation cont.}
-	Programmers prefer ‵‵natural'' datatype and functions,
-	\aha{
+	\begin{columns}[T]
+		\begin{column}{0.5\textwidth}
+		``Natural'' function:
 		\begin{code}
-rename : ∀ {Γ Δ}  → (∀ {A} → Γ ∋  A → Δ ∋  A)
-                  → (∀ {A} → Γ ⊢  A → Δ ⊢  A)
+rename : ∀ {Γ Δ}
+       → (∀ {A} → Γ ∋  A → Δ ∋  A)
+       → (∀ {A} → Γ ⊢  A → Δ ⊢  A)
 rename ρ (‵ x)          =  ‵ (ρ x)
 rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
 rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)
+		\end{code}
+		\end{column}
 
+		\begin{column}{0.5\textwidth}
+		Generic function:
+		\begin{code}
 Renaming : Semantics Var Lam
 Renaming = record
   { th^V  = th^Var
@@ -326,43 +359,14 @@ Renaming = record
   ; lam   = λ b → ‘lam (b weaken z) }
 rename = semantics Renaming
 		\end{code}
-	}{
-		\begin{code}
-data _⊢_ : Context → Type → Set where
-  ‵_     : Γ ∋ A → Γ ⊢ A
-  ƛ_     : Γ , A ⊢ B → Γ ⊢ A ⇒ B
-  _·_    : Γ ⊢ A ⇒ B → Γ ⊢ A → Γ ⊢ B
-		\end{code}
-	\begin{code}
-STLC : Desc Type
-STLC = σ ‵STLC λ where
-  (App  i j) → ‵X [] (i ⇒ j) (‵X [] i (▪ j))
-  (Lam  i j) → ‵X (i ∷ []) j (▪ (i ⇒ j))
-	\end{code}
-	}
+		\end{column}
+	\end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Motivation cont.}
-	Programmers prefer ``natural'' datatypes and functions,
-		\begin{code}
-rename : ∀ {Γ Δ}  → (∀ {A} → Γ ∋  A → Δ ∋  A)
-                  → (∀ {A} → Γ ⊢  A → Δ ⊢  A)
-rename ρ (‵ x)          =  ‵ (ρ x)
-rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
-rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)
-
-Renaming : Semantics Var Lam
-Renaming = record
-  { th^V  = th^Var
-  ; var   = ‘var
-  ; app   = ‘app
-  ; lam   = λ b → ‘lam (b weaken z) }
-rename = semantics Renaming
-	\end{code}
-\end{frame}
+\note{We conclude that one of the reasons these generic libraries are not widely adopted is because the definitions are not intuitive. Here is a comparison, we think function definitions on the left is more popular and have better properties for programming language researchers. }
 
 \begin{frame}[fragile]{Motivation cont.}
-	Problems with syntax universes:
+	Problems with using syntax universes:
 	\pause
 	\begin{enumerate}
 		\item Readability
@@ -375,51 +379,116 @@ rename = semantics Renaming
 	\end{enumerate}
 \end{frame}
 
+\note{The downsides of generic libraries can be summarized as such: First of all, readability. One merit of intrinsic typing is that types of constructors closely resemble typing rules, as we can see previously, typing rules are less obvious for syntaxes defined in generic universes. Secondly, to utilize such generic libraries, programmers are required to understand the generic universe instead of just defining syntaxes the way they want, and they need to learn a new generic construction or representation everytime they want some features only exist in another generic library, even though they are working on the same syntax. This leads us to te third problem, interoperability. It's not only hard to use two or more generic libraries at once, it's also very difficult to use any libaries that was applicable to natural definitions. The interoperability with existing tools also suffer, for example, it was clear that for every typing rule their is a clause for the rename function, because every typing rule corresponds to one constructor. Here we can utilize the case-spliting mechanism provided by Agda's editor mode, and we can easily see how many clauses we should define for a rename function. We can't benefit from these tools or existing IDE supports when using generic universes, for there's no such correspondence.}
+
 \section{Elaborator Reflection to the Rescue}
 
+\note{Therefore, we want the best from both worlds, we want programmers and researchers to use native definitions whenever possible, while generic programs can still be invoked. We acheive this by elaborator reflection. Elaborator reflection is the metaprogramming mechanism provided by Agda, it allows us to read and define datatype and function definitions.}
+
 \begin{frame}[fragile]{Elaborator Reflection to the Rescue}
-	``Datatype-Generic Programming Meets Elaborator Reflection'', to be presented at 15:50, Tuesday:
+	``Datatype-Generic Programming Meets Elaborator Reflection'' at 15:50, Tuesday.
+
 	\pause
-	\begin{itemize}
-		\item a generic description \mi{DataD} for Agda's inductive datatypes,
-		\pause
-		\item generic program descriptions \mi{FoldP} for folds (and \mi{IndP} for inductions),
-		\pause
-		\item a metaprogram \mi{genDataD} that generates datatype descriptions from their native definitions, and 
-		\pause
-		\item a metaprogram \mi{defineFold} that generates function definitions from their generic representations.
-	\end{itemize}
+
+	Syntax-generic operations \emph{are} Datatype-generic programs with constraints.
 \end{frame}
 
-\begin{frame}[fragile]{Motivation cont.}
-	We further define:
-	\begin{itemize}
-		\item a predicate \mi{Syntax} on \mi{DataD} that captures a subset equivalent to \mi{Desc}.
-		\item a function \mi{SemP} that generates descriptions (typed \mi{FoldP}) of generic fold operations, given proofs of the predicate.
-	\end{itemize}
-It turns out all programs defined with \mi{Semantics} are folds.
+\note{I would like to shamelessly promote the other work we are publishing, Datatype-Generic Programming Meets Elaborator Reflection. Josh will present it on Tuesday at the main conference. Josh, my advisor, Liang-Ting, my co-worker, and I, we have demostrated in that work on how to mix elaborator reflection with datatype-generic programming, such  we can define programs that work for a family of datatypes, while using elaborator reflection to reify such programs as natural function definitions defined on native datatypes. What does this have to do with syntax-generic libraries that we spent so much time intorducing? It turns out, syntax-generic programs can sometimes be seem as a subset of datatype-generic programs. In this case, we can constrain a subset of all datatypes such that datatypes in this subset are also describable by Allais et al.'s library.}
+
+\begin{frame}[fragile]{The ideal process}
+	\begin{enumerate}
+		\item The programmer defines a native datatype $T$.
+		\pause
+		\item A metaprogram generates the description $D$ of $T$.
+		\pause
+		\item The programmer provides a proof $S$ of $D$ that says $T$ is indeed a syntax.
+		\pause
+		\item The programmer choose one description $P$ from a set of pre-defined generic programs.
+		\pause
+		\item A metaprogram takes $D$, $S$, and $P$, generates a native function accordingly.
+	\end{enumerate}
 \end{frame}
+
+\note{By introducing datatype-generic programming and metaprograms, let's see what we think is the better process here for a programmer? Firstly they define a native datatype that we know to be a syntax, instead of relying on any generic description. Then by metaprograms in our datatype-generic library, they get the datatype description of that datatype. The programmer then proves the datatype to be a syntax by providing a proof of our pre-defined predicate. Then they can choose a generic program to reify. This generic program is pre-defined by the ``geneic library programmers'', who has defined what generic programs exist for what subsets, here the chosen programs must work on datatypes constrained by $S$ which are syntaxes. Lastly, another metaprogram takes all these things, $D$, $S$, $P$, and gives the programmer a native, reifed funtion definition, as if everything is defined by hands.}
 
 \begin{frame}[fragile]{Flow Chart}
-\includegraphics[width=\columnwidth]{Diagram.pdf}
+\includegraphics[width=\columnwidth]{Diagram1.pdf}
 \end{frame}
+
+\note{Let's do a quick rundown with our actual definitions. We have three worlds, the user's own world, the syntax-datatype-generic library, and metaprograms. Say the user defines a language called Lam, indexed by the type and context of a term.}
+
+\begin{frame}[fragile]{Flow Chart}
+\includegraphics[width=\columnwidth]{Diagram2.pdf}
+\end{frame}
+
+\note{They can invoke a metaprogram genDataD, which generates a datatype description of type DataD, we call it LamD.}
+
+\begin{frame}[fragile]{Flow Chart}
+\includegraphics[width=\columnwidth]{Diagram3.pdf}
+\end{frame}
+
+\note{Then to use the generic library, the user must provide a proof that the description we just generated is syntax. Here Syntax is the predicate, and we call the proof LamSyn.}
+
+\begin{frame}[fragile]{Flow Chart}
+\includegraphics[width=\columnwidth]{Diagram4.pdf}
+\end{frame}
+
+\note{Then it's the job for the generic library. Renaming here is a function that generates syntax-generic programs. Syntax-generic programs are represented as Semantics.}
+
+\begin{frame}[fragile]{Flow Chart}
+\includegraphics[width=\columnwidth]{Diagram5.pdf}
+\end{frame}
+
+\note{But our metaprograms that generates functions are for datatype-generic programs. so we need another translation in the generic library that is from syntax-generic programs to datatype-generic programs. SemP is this translation and FoldP is the type of datatype-generic fold programs.}
+
+\begin{frame}[fragile]{Flow Chart}
+\includegraphics[width=\columnwidth]{Diagram6.pdf}
+\end{frame}
+
+\note{Finally, defineFold is a metaprogram that generates actual function definitions. So the user doesn't need to understand the detailed definitions in the generic libary, they can write native datatype and get native function definitions if they know what metaprograms and functions to call.}
+
+\begin{frame}[fragile]{Provided by our datatype-generic library}
+	\begin{itemize}
+		\item \mi{DataD}
+		\pause
+		\item \mi{FoldP} for folds (and \mi{IndP} for inductions)
+		\pause
+		\item metaprogram \mi{genDataD}
+		\pause
+		\item metaprogram \mi{defineFold}
+	\end{itemize}
+\end{frame}
+
+\note{These are provided by our work DGP+Reflection}
+
+\begin{frame}[fragile]{Our Work}
+	\begin{itemize}
+		\item a predicate \mi{Syntax} on \mi{DataD} that captures \mi{Desc}.
+		\item a function \mi{SemP} that generates \mi{FoldP} from \mi{Syntax} proofs.
+	\end{itemize}
+\end{frame}
+
+\note{These are our contribution in this work}
+
 
 \begin{frame}[fragile]{The \mi{Syntax} Predicate}
 	\begin{code}
 Syntax : Set ℓ → DataD → Setω
 	\end{code}
-All syntaxes in \mi{Desc} should be captured by the \mi{Syntax} predicate:
+\mi{Desc} are captured by \mi{Syntax} as each:
 	\pause
 	\begin{itemize}
-		\item each of them has a variable rule as its first rule,
+		\item has a variable rule,
 		\pause
-		\item they are not universe polymorphic,
+		\item is not universe polymorphic,
 		\pause
-		\item each have two indices, $I$ and $\mi{List}\ I$, and
+		\item has two indices, $I$ and $\mi{List}\ I$, and
 		\pause
-		\item allow and only allow context extensions in subterms.
+		\item supports context extensions.
 	\end{itemize}
 \end{frame}
+
+\note{We don't have time for these}
 
 \begin{frame}[fragile]{The \mi{Syntax} Predicate}
 Does \mi{PCF} satisfies \mi{Syntax}?
@@ -453,6 +522,8 @@ SyntaxPCF = _
 	\end{exampleblock}
 \end{frame}
 
+\note{Let's see an example of the syntax proof}
+
 % \begin{frame}[fragile]{Translation from Semantics to natural looking functions}
 % \end{frame}
 
@@ -462,21 +533,27 @@ SyntaxPCF = _
 
 \begin{frame}[fragile]{Future Works \& Issues}
 	\begin{itemize}
-		\item Proof automation with elaborator reflection 
-		\item Better user interface
-		\item Applying the framework to more generic libraries
+		\item \mi{Syntax} proof automation
+		\item User interface
+		\item Port more generic libraries:
 		\pause
 			\begin{itemize}
-				\item Expressiveness is limited by Agda datatypes as well as the generic universe, a \mi{Syntax} predicate must be defined.
+				% \item Expressiveness is limited by Agda datatypes as well as the generic universe, a \mi{Syntax} predicate must be defined.
+				% \pause
+				% \item Even if we can define \mi{Syntax}, the proof could be more complicated, even require programmers to understand the generic universe.
+				% \pause
+				% \item Obstacles of using multiple generic libraries at once.
+				% \pause
+				% \item Are folds and inductions enough?
+				\item Expressiveness
 				\pause
-				\item Even if we can define \mi{Syntax}, the proof could be more complicated, even require programmers to understand the generic universe.
+				\item Complexity of \mi{Syntax}
 				\pause
-				\item Obstacles of using multiple generic libraries at once.
+				\item Interoperability
 				\pause
 				\item Are folds and inductions enough?
 			\end{itemize}
 	\pause
-	\item Is it worth it?
 	\end{itemize}
 \end{frame}
 
