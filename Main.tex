@@ -28,6 +28,7 @@
 \addbibresource{bib.bib}
 \usepackage[greek,english]{babel}
 \usepackage{newunicodechar}
+\usepackage{xcolor}
 % \usepackage{polytable}
 
 
@@ -66,6 +67,7 @@
 \newunicodechar{∷}{\ensuremath{::}}
 \newunicodechar{∗}{\ensuremath{\mathord\ast}}
 \newunicodechar{ℓ}{\ensuremath{\ell}}
+\newunicodechar{∅}{\ensuremath{\emptyset}}
 
 
 %% ODER: format ==         = "\mathrel{==}"
@@ -329,7 +331,7 @@
 %
 
 \title{Syntax-Generic Operations, Reflectively Reified}
-\author[Name]{Tzu-Chi Lin and Hsiang-Shang Ko} %With inst, you can change the institution they belong
+\author[Name]{Tzu-Chi Lin and Josh Ko} %With inst, you can change the institution they belong
 \subtitle{Extended Abstract}
 \institute[uni]{Institute of Information Science \\ Academia Sinica, Taiwan}
 \date{\today}
@@ -345,28 +347,38 @@
 \metroset{titleformat frame=smallcaps} %This changes the titles for small caps
 
 \note{Hello everyone, my name is Tzu-Chi, I am a research assistant from Academia Sinica in Taiwan.
-Today I will be talking about the joint work of my advisor's am mine, it's "Syntax-generic Operations, Reflectively Reified".}
+Today I will be talking about the joint work of my advisor's and mine, it's "Syntax-generic Operations, Reflectively Reified".}
 
-\begin{frame}[fragile]{Outline}
-\setbeamertemplate{section in toc}[sections numbered] %This is numbering the sections
-\tableofcontents[hideallsubsections] %You can comment this line if you want to show the subsections in the table of contents
-\end{frame}
+% \begin{frame}[fragile]{Outline}
+% \setbeamertemplate{section in toc}[sections numbered] %This is numbering the sections
+% \tableofcontents[hideallsubsections] %You can comment this line if you want to show the subsections in the table of contents
+% \end{frame}
 
-\note{Firstly, I will introduce some backgrounds and our motivations, including the existing work we base on. In general, we apply the techniques we introduced in our another work, "Datatype-Generic Programming Meets Elaborator Reflection", which Josh will present on Tuesday. We apply the techniques in that work on a common problem for depentely typed programmers. I will show you a demo if we have time, and most importantly, we want to know your opinions on it.}
+\note{Firstly, I will introduce some backgrounds and our motivations, including the existing work we base on. In general, we apply the techniques we introduced in our another work, "Datatype-Generic Programming Meets Elaborator Reflection", which Josh will present on Tuesday. We apply the techniques in that work on a common problem for depentely typed programmers. I will show you a demo if we have time, and most importantly, we want to know your opinions on it. Is this a better approach? Will you want to use it? Hopefully we can get some feedbacks after this talk.}
 
-\section{Introduction}
 
-\note{Let's start!}
-
-\begin{frame}[fragile]{Motivation}
+\begin{frame}[fragile]{Typical Languages in Languages}
 \emph{Intrinsic typing} is common for $\uplambda$-calculus with De Bruijn indices.
-	\aha{%
-		\begin{hscode}\SaveRestoreHook
+	% \aha{%
+	% 	\begin{code}
+	% data _⊢_ : Context → Type → Set where
+  % ‵_     : Γ ∋ A → Γ ⊢ A
+  % ƛ_     : Γ , A ⊢ B → Γ ⊢ A ⇒ B
+  % _·_    : Γ ⊢ A ⇒ B → Γ ⊢ A → Γ ⊢ B
+  % ‵zero  : Γ ⊢ ‵ℕ
+  % ‵suc_  : Γ ⊢ ‵ℕ → Γ ⊢ ‵ℕ
+  % case   : Γ ⊢ ‵ℕ → Γ ⊢ A → Γ , ‵ℕ ⊢ A → Γ ⊢ A
+  % μ_     : Γ , A ⊢ A → Γ ⊢ A
+	% 	\end{code}
+	% }{%
+		\begin{columns}[T]
+			\begin{column}{0.6\textwidth}
+				\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{10}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\mathbf{data}\;\Varid{\char95 ⊢\char95 }\;\mathbin{:}\;\Conid{Context}\;\Varid{→}\;\Conid{Type}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
+\>[B]{}\mathbf{data}\;\Varid{\char95 ⊢\char95 }\;\mathbin{:}\;\Conid{Context}\;\Varid{→}\;\Conid{Ty}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Varid{‵\char95 }\;{}\<[10]%
@@ -379,60 +391,85 @@ Today I will be talking about the joint work of my advisor's am mine, it's "Synt
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Varid{\char95 ·\char95 }\;{}\<[10]%
 \>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{⇒}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{B}{}\<[E]%
-\\
-\>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{‵zero}\;{}\<[10]%
-\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Varid{‵ℕ}{}\<[E]%
-\\
-\>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{‵suc\char95 }\;{}\<[10]%
-\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Varid{‵ℕ}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Varid{‵ℕ}{}\<[E]%
-\\
-\>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{case}\;{}\<[10]%
-\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Varid{‵ℕ}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{,}\;\Varid{‵ℕ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}{}\<[E]%
-\\
-\>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{μ\char95 }\;{}\<[10]%
-\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{,}\;\Conid{A}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
-	}{%
-		\begin{hscode}\SaveRestoreHook
+			\end{column}
+			\begin{column}{0.6\textwidth}
+				\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{8}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{10}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\mathbf{data}\;\Conid{Type}\;\mathbin{:}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
+\>[B]{}\mathbf{data}\;\Conid{Ty}\;\mathbin{:}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Varid{α}\;{}\<[8]%
-\>[8]{}\mathbin{:}\;\Conid{Type}{}\<[E]%
+\>[8]{}\mathbin{:}\;\Conid{Ty}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Varid{\char95 ⇒\char95 }\;{}\<[8]%
-\>[8]{}\mathbin{:}\;\Conid{Type}\;\Varid{→}\;\Conid{Type}\;\Varid{→}\;\Conid{Type}{}\<[E]%
+\>[8]{}\mathbin{:}\;\Conid{Ty}\;\Varid{→}\;\Conid{Ty}\;\Varid{→}\;\Conid{Ty}{}\<[E]%
 \\[\blanklineskip]%
-\>[B]{}\mathbf{data}\;\Varid{\char95 ⊢\char95 }\;\mathbin{:}\;\Conid{Context}\;\Varid{→}\;\Conid{Type}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
+\>[B]{}\mathbf{data}\;\Conid{Context}\;(\Conid{A}\;\mathbin{:}\;\Conid{Set})\;\mathbin{:}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{‵\char95 }\;{}\<[10]%
-\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{∋}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}{}\<[E]%
+\>[3]{}\Varid{∅}\;{}\<[8]%
+\>[8]{}\mathbin{:}\;\Conid{Context}\;\Conid{A}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{ƛ\char95 }\;{}\<[10]%
-\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{,}\;\Conid{A}\;\Varid{⊢}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{⇒}\;\Conid{B}{}\<[E]%
+\>[3]{}\Varid{\char95 ,\char95 }\;{}\<[8]%
+\>[8]{}\mathbin{:}\;(\Conid{Γ}\;\mathbin{:}\;\Conid{Context}\;\Conid{A})\;\Varid{→}\;\Conid{A}\;\Varid{→}\;\Conid{Context}\;\Conid{A}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\mathbf{data}\;\Varid{\char95 ∋\char95 }\;\mathbin{:}\;\Conid{Context}\;\Varid{→}\;\Conid{Ty}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{\char95 ·\char95 }\;{}\<[10]%
-\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{⇒}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{B}{}\<[E]%
+\>[3]{}\Varid{z}\;\mathbin{:}\;\Conid{Γ}\;\Varid{,}\;\Conid{A}\;\Varid{∋}\;\Conid{A}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{s}\;\mathbin{:}\;\Conid{Γ}\;\Varid{∋}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{,}\;\Conid{B}\;\Varid{∋}\;\Conid{A}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
-	}
+			\end{column}
+		\end{columns}
+	% }
 \end{frame}
 
-\note{Here is an example of a language defined in Agda. It's simply-typed lambda calculus, and with the help of intrinsic typing, the syntax definition is very concise. Here \mi{Context} is List of Type. There are three constructors, each corresponding to the variable, abstraction, and application rule.}
+\note{For starters, Let's take a look at a common thing dependently typed programmers would do, that is defining a programming language in a dependently typed programming language, such as Agda. It's a language in language. Here is an example of the syntax of a language defined in Agda. It's a simply-typed lambda calculus, and with the help of intrinsic typing, the syntax definition is very concise. We define a datatype called Ty to describe the possible types for this language, that the term is either of a single type or a function type. Here \mi{Context} is defined as the List of Ty. And we have a simple ``has'' relation that represents variables. For if a variable is typed it must be in the context. And we know that a simply typed lambda calculus has three constructions, each having a a typing rule. Here are three constructors, each of them corresponds to the variable rule, the abstraction rule, and the application rule.}
+
+\begin{frame}
+Scope-safe syntax operations:
+	\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{19}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{22}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{35}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{44}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{rename}\;\mathbin{:}\;\Varid{∀}\;\{\mskip1.5mu \Conid{Γ}\;\Conid{Δ}\mskip1.5mu\}\;{}\<[19]%
+\>[19]{}\Varid{→}\;(\Varid{∀}\;\{\mskip1.5mu \Conid{A}\mskip1.5mu\}\;\Varid{→}\;\Conid{Γ}\;\Varid{∋}\;{}\<[35]%
+\>[35]{}\Conid{A}\;\Varid{→}\;\Conid{Δ}\;\Varid{∋}\;{}\<[44]%
+\>[44]{}\Conid{A})\;{}\<[E]%
+\\
+\>[19]{}\Varid{→}\;(\Varid{∀}\;\{\mskip1.5mu \Conid{A}\mskip1.5mu\}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;{}\<[35]%
+\>[35]{}\Conid{A}\;\Varid{→}\;\Conid{Δ}\;\Varid{⊢}\;{}\<[44]%
+\>[44]{}\Conid{A}){}\<[E]%
+\\
+\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{‵}\;\Varid{x})\;{}\<[19]%
+\>[19]{}\mathrel{=}\;{}\<[22]%
+\>[22]{}\Varid{‵}\;(\Varid{ρ}\;\Varid{x}){}\<[E]%
+\\
+\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{ƛ}\;\Conid{N})\;{}\<[19]%
+\>[19]{}\mathrel{=}\;{}\<[22]%
+\>[22]{}\Varid{ƛ}\;(\Varid{rename}\;(\Varid{ext}\;\Varid{ρ})\;\Conid{N}){}\<[E]%
+\\
+\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Conid{L}\;\Varid{·}\;\Conid{M})\;{}\<[19]%
+\>[19]{}\mathrel{=}\;{}\<[22]%
+\>[22]{}(\Varid{rename}\;\Varid{ρ}\;\Conid{L})\;\Varid{·}\;(\Varid{rename}\;\Varid{ρ}\;\Conid{M}){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{frame}
+
+\note{Then let's define some operations on this syntax. Such operations are scope-safe. For example, let's define a rename function. A \mi{rename} function says that if there's a mapping from every variable in a context $\varGamma$ to the other context $\varDelta$, we can always find a mapping from every term that is typed in $\varGamma$ to a term typed in $\varDelta$. Because we can remap every variable in that term. If we encounter a subterm that has a extended context, for example, the case of lambda abstraction, the variable mapping should be extended accordingly.}
 
 \begin{frame}[fragile]{Motivation}
 \emph{Intrinsic typing} is common for $\uplambda$-calculus with De Bruijn indices.
@@ -442,19 +479,18 @@ Today I will be talking about the joint work of my advisor's am mine, it's "Synt
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{10}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\mathbf{data}\;\Varid{\char95 ⊢\char95 }\;\mathbin{:}\;\Conid{Context}\;\Varid{→}\;\Conid{Type}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
+\>[B]{}\mathbf{data}\;\Conid{Ty}\;\mathbin{:}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{‵\char95 }\;{}\<[10]%
-\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{∋}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}{}\<[E]%
+\>[3]{}\Varid{...}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{ƛ\char95 }\;{}\<[10]%
-\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{,}\;\Conid{A}\;\Varid{⊢}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{⇒}\;\Conid{B}{}\<[E]%
+\>[3]{}\Varid{‵ℕ}\;\mathbin{:}\;\Conid{Ty}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\mathbf{data}\;\Varid{\char95 ⊢\char95 }\;\mathbin{:}\;\Conid{Context}\;\Varid{→}\;\Conid{Ty}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{\char95 ·\char95 }\;{}\<[10]%
-\>[10]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{⇒}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{B}{}\<[E]%
+\>[3]{}\Varid{...}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Varid{‵zero}\;{}\<[10]%
@@ -476,10 +512,9 @@ Today I will be talking about the joint work of my advisor's am mine, it's "Synt
 	}
 \end{frame}
 
-\note{Let's extend the example, we might want natural number primitives in our language, so we extend the Type datatype, we also add rules for branching and recursion.}
+\note{Now what if we extend the language? we might want natural number primitives in our language, so we extend the Ty datatype with a new type, we add four typing rules, two of them, zero and suc are for constructing natural numbers, and another two rules for branching and recursion.}
 
 \begin{frame}[fragile]{Motivation}
-Scope-safe syntax operations:
 		\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{19}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -498,17 +533,7 @@ Scope-safe syntax operations:
 \>[35]{}\Conid{A}\;\Varid{→}\;\Conid{Δ}\;\Varid{⊢}\;{}\<[44]%
 \>[44]{}\Conid{A}){}\<[E]%
 \\
-\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{‵}\;\Varid{x})\;{}\<[25]%
-\>[25]{}\mathrel{=}\;{}\<[28]%
-\>[28]{}\Varid{‵}\;(\Varid{ρ}\;\Varid{x}){}\<[E]%
-\\
-\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{ƛ}\;\Conid{N})\;{}\<[25]%
-\>[25]{}\mathrel{=}\;{}\<[28]%
-\>[28]{}\Varid{ƛ}\;(\Varid{rename}\;(\Varid{ext}\;\Varid{ρ})\;\Conid{N}){}\<[E]%
-\\
-\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Conid{L}\;\Varid{·}\;\Conid{M})\;{}\<[25]%
-\>[25]{}\mathrel{=}\;{}\<[28]%
-\>[28]{}(\Varid{rename}\;\Varid{ρ}\;\Conid{L})\;\Varid{·}\;(\Varid{rename}\;\Varid{ρ}\;\Conid{M}){}\<[E]%
+\>[B]{}\Varid{...}{}\<[E]%
 \\
 \>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{‵zero})\;{}\<[25]%
 \>[25]{}\mathrel{=}\;{}\<[28]%
@@ -534,17 +559,17 @@ Scope-safe syntax operations:
 \end{hscode}\resethooks
 \end{frame}
 
-\note{There are some common operations for this kind of language, for example, \mi{rename} is common for languages with De Bruijn indices. \mi{rename} says that if there's a mapping from every element in a context $\varGamma$ to the other $\varDelta$, we can always find a mapping from every term that is typed in $\varGamma$ to a term typed in $\varDelta$.}
+\note{If we want a rename function for this extended language, we can copy and paste the rename we just defined and add a new clause for each constructor. We can notice here the patterns still follow, a renaming always take a term from a constructor to one with the same constructor, if encounter subterm, call rename recursively, if there's context extension, extend the variable mapping as well. So no matter how many constructors there are we follow the same logic.}
 
 \begin{frame}[fragile]{Motivation}
-We may change/extend the object language:
+Change/extend the object language even further:
 		\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{9}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{13}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\mathbf{data}\;\Varid{\char95 ⊢\char95 }\;\mathbin{:}\;\Conid{Context}\;\Varid{→}\;\Conid{Type}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
+\>[B]{}\mathbf{data}\;\Varid{\char95 ⊢\char95 }\;\mathbin{:}\;\Conid{Context}\;\Varid{→}\;\Conid{Ty}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
 \\
 \>[B]{}\hsindent{9}{}\<[9]%
 \>[9]{}\Varid{...}{}\<[E]%
@@ -580,7 +605,7 @@ We may change/extend the object language:
 \end{hscode}\resethooks
 \end{frame}
 
-\note{What if we extend the language even further? Here we add even more rules to the language we just defined.}
+\note{What if we extend the language even further? Here we add even more rules to the language we just defined. syntax sugaring, pairs and projections, etc.}
 
 \begin{frame}[fragile]{Motivation}
 Redefine/extend syntax operations:
@@ -590,6 +615,8 @@ Redefine/extend syntax operations:
 \column{28}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{35}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{...}{}\<[E]%
+\\
 \>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{con}\;\Varid{n})\;{}\<[25]%
 \>[25]{}\mathrel{=}\;{}\<[28]%
 \>[28]{}\Varid{con}\;\Varid{n}{}\<[E]%
@@ -624,7 +651,7 @@ Redefine/extend syntax operations:
 \end{hscode}\resethooks
 \end{frame}
 
-\note{The \mi{rename} function must be extended or redefined everytime we make some changes to the object language. Here we can start to notice the pattern of \mi{rename}. For every subterm in a term we call \mi{rename} recursively, and modify the mapping function with \mi{ext} if there are context extensions. The result subterms are then constructed by the same constructor they are pattern matched from. We see here a pattern of fold operation. We probaly would want to apply generic programming here to avoid defining such operations every time.}
+\note{Then, the \mi{rename} function must be extended everytime we make some changes to the object language. The pattern still applies and it becomes a very repeating work.}
 
 \begin{frame}[fragile]{Motivation}
 Other repeating operations:
@@ -647,15 +674,25 @@ Other repeating operations:
 \end{hscode}\resethooks
 \end{frame}
 
-\note{There are other repeating operations that must be redefined for every change in the object language, if you have already defined a language with multiple such operations, you probaly would wish for some kind of automations.}
+\note{There are other repeating operations that should be redefined for every change in the object language, if you have already defined a language with multiple such operations, you probaly would want some kind of generic program that works for every syntax, or a mechanism that generates these operatoins from any given languages.}
 
-\begin{frame}[fragile]{Existing work}
-  There are generic libraries for a family/families of syntaxes with binders~\footcite{Allais-generic-syntax}\footcite{Ahrens-typed-abstract-syntax}.
-
-We improve upon Allais et al.'s approach\footnotemark[1] published at ICFP '18.
+\begin{frame}{Where we are going...}
+\setbeamertemplate{section in toc}[sections numbered] %This is numbering the sections
+\tableofcontents[hideallsubsections] %You can comment this line if you want to show the subsections in the table of contents
 \end{frame}
 
-\note{There have been some generic libraries aiming for eliminating such repetitions, but they are not widely adopted. We introduce a work by Allais et al. and illustrate what we think is limiting in their and others' generic libraries, so later we can show how we can improve upon their work and others alike.}
+\note{Now we know the problem we are dealing with. In the next section, I will introduce an existing work for eliminating the repetitions we just mentioned. After that I will illustrate how we develope an alternative approach based on this previous work, by incorporating elaborator reflection. We will make some comparisons along the way, and finally we raise some questions regarding our own work, and hopefully get some feedbacks from you, the programming language researchers.}
+
+\section{Existing Work for Syntax-generic Operations}
+\note{Let's start with the existing work.}
+
+\begin{frame}[fragile]{Existing work}
+There are generic libraries for a family/families of syntaxes with binders.
+
+We improve upon Allais et al.'s approach presented at ICFP '18 (later published in JFP '21).
+\end{frame}
+
+\note{Now we turn our eyes on a work by Allais et al. They have developed a syntax-generic framework with a variety of syntax-generic operations, such as renaming, subsitution, printing and scope checking.}
 
 \begin{frame}[fragile]{Existing work by Allais et al.}
 	Allais et al.'s \mi{Desc}:
@@ -679,9 +716,40 @@ We improve upon Allais et al.'s approach\footnotemark[1] published at ICFP '18.
 \>[13]{}\mathbin{:}\;\Conid{I}\;\Varid{→}\;\Conid{Desc}\;\Conid{I}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
+	\hrulefill
+	\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{9}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mathbf{data}\;\Varid{‵STLC}\;\mathbin{:}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Conid{App}\;\Conid{Lam}\;\mathbin{:}\;\Conid{Ty}\;\Varid{→}\;\Conid{Ty}\;\Varid{→}\;\Varid{‵STLC}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Conid{STLCD}\;\mathbin{:}\;\Conid{Desc}\;\Conid{Ty}{}\<[E]%
+\\
+\>[B]{}\Conid{STLCD}\;\mathrel{=}\;\Varid{‵σ}\;\Varid{‵STLC}\;\Varid{λ}\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}(\Conid{App}\;{}\<[9]%
+\>[9]{}\Varid{i}\;\Varid{j})\;\Varid{→}\;{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\Varid{‵X}\;\Varid{[]}\;(\Varid{i}\;\Varid{⇒}\;\Varid{j})\;(\Varid{‵X}\;\Varid{[]}\;\Varid{i}\;(\Varid{▪}\;\Varid{j})){}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}(\Conid{Lam}\;{}\<[9]%
+\>[9]{}\Varid{i}\;\Varid{j})\;\Varid{→}\;{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\Varid{‵X}\;(\Varid{i}\;\Varid{∷}\;\Varid{[]})\;\Varid{j}\;(\Varid{▪}\;(\Varid{i}\;\Varid{⇒}\;\Varid{j})){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
 \end{frame}
 
-\note{Allais et al. provides a universe that describes a certain kind of syntax. It's worth mentioning that all such universes are limiting in natural, because we don't know what kind of syntax the researchers would define, we can only presume. In this case, they have presumed that the syntax to be described must have a type and a context, while allowing binders to extend the context. This restriction is necessary and important, we will come back to it later.}
+\note{How have they achieved it? They provide a universe of descriptions called Desc that describes a family of syntaxes. We won't go into its details here, but we can say that every inhabitant in this universe represents a syntax, and simply-typed lambda calculus is one of them. The parameter I in the Desc universe says that a syntax is intrinsically typed by I and has a context of List of I. So simply-typed lambda calculus can be encoded as a description indexed by the Ty datatype we have defined previously, saying that it's a syntax where every term in it has a type represented by Ty, and has a context that is a list of Ty.}
 
 \begin{frame}[fragile]{Existing work by Allais et al.}
 \begin{columns}[T]
@@ -690,27 +758,21 @@ Simply typed $\uplambda$-calculus
 	\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{9}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{8}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\mathbf{data}\;\Conid{STLC}\;\mathbin{:}\;\Conid{Type}\;\Varid{→}\;\Conid{Context}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
+\>[B]{}\mathbf{data}\;\Varid{\char95 ⊢\char95 }\;\mathbin{:}\;\Conid{Context}\;\Varid{→}\;\Conid{Ty}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{‵var}\;{}\<[9]%
-\>[9]{}\mathbin{:}\;\Conid{Var}\;\Varid{σ}\;\Conid{Γ}\;{}\<[E]%
+\>[3]{}\Varid{‵\char95 }\;{}\<[8]%
+\>[8]{}\mathbin{:}\;\Conid{Γ}\;\Varid{∋}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}{}\<[E]%
 \\
-\>[9]{}\Varid{→}\;\Conid{STLC}\;\Varid{σ}\;\Conid{Γ}{}\<[E]%
-\\[\blanklineskip]%
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{‵app}\;{}\<[9]%
-\>[9]{}\mathbin{:}\;\Conid{STLC}\;(\Varid{σ}\;\Varid{⇒}\;\Varid{τ})\;\Conid{Γ}\;\Varid{→}\;\Conid{STLC}\;\Varid{σ}\;\Conid{Γ}\;{}\<[E]%
+\>[3]{}\Varid{ƛ\char95 }\;{}\<[8]%
+\>[8]{}\mathbin{:}\;\Conid{Γ}\;\Varid{,}\;\Conid{A}\;\Varid{⊢}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{⇒}\;\Conid{B}{}\<[E]%
 \\
-\>[9]{}\Varid{→}\;\Conid{STLC}\;\Varid{τ}\;\Conid{Γ}{}\<[E]%
-\\[\blanklineskip]%
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Varid{‵lam}\;{}\<[9]%
-\>[9]{}\mathbin{:}\;\Conid{STLC}\;\Varid{τ}\;(\Varid{σ}\;\Varid{∷}\;\Conid{Γ})\;{}\<[E]%
-\\
-\>[9]{}\Varid{→}\;\Conid{STLC}\;(\Varid{σ}\;\Varid{⇒}\;\Varid{τ})\;\Conid{Γ}{}\<[E]%
+\>[3]{}\Varid{\char95 ·\char95 }\;{}\<[8]%
+\>[8]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{⇒}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{B}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 \end{column}
@@ -723,12 +785,181 @@ encoded in \mi{Desc}:
 \column{5}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{9}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\mathbf{data}\;\Varid{‵STLC}\;\mathbin{:}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
+\>[B]{}\Conid{STLCD}\;\mathbin{:}\;\Conid{Desc}\;\Conid{Ty}{}\<[E]%
+\\
+\>[B]{}\Conid{STLCD}\;\mathrel{=}\;\Varid{‵σ}\;\Varid{‵STLC}\;\Varid{λ}\;\mathbf{where}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\Conid{App}\;\Conid{Lam}\;\mathbin{:}\;\Conid{Type}\;\Varid{→}\;\Conid{Type}\;\Varid{→}\;\Varid{‵STLC}{}\<[E]%
+\>[3]{}(\Conid{App}\;{}\<[9]%
+\>[9]{}\Varid{i}\;\Varid{j})\;\Varid{→}\;{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\Varid{‵X}\;\Varid{[]}\;(\Varid{i}\;\Varid{⇒}\;\Varid{j})\;(\Varid{‵X}\;\Varid{[]}\;\Varid{i}\;(\Varid{▪}\;\Varid{j})){}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}(\Conid{Lam}\;{}\<[9]%
+\>[9]{}\Varid{i}\;\Varid{j})\;\Varid{→}\;{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\Varid{‵X}\;(\Varid{i}\;\Varid{∷}\;\Varid{[]})\;\Varid{j}\;(\Varid{▪}\;(\Varid{i}\;\Varid{⇒}\;\Varid{j})){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+	\pause
+	\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Conid{STLC'}\;\mathrel{=}\;\Conid{Tm}\;\Conid{STLCD}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{column}
+\end{columns}
+\pause
+$$\mi{\_⊢\_} \cong \mi{STLC'}$$
+\end{frame}
+
+\note{A simply-typed lambda calculus here on the left hand side can be rewritten as a description on the right hand side. In fact, to utilize such generic libraries, programmers are required to encode their syntax in the given description, because syntax-generic operations are defined on these descriptions. To acquire something structurally similar to the native symtax datatype, we can use the \mi{Tm} type constructor, it that takes the fixpoint of the functor of a description. We may prove that a syntax defined as a isolated datatype is isomorphic to the fixpoint of some functor. But to use a generic library one must follow its rules.}
+
+% \begin{frame}[fragile]{Existing work by Allais et al.}
+% 	\begin{code}
+% STLC : Desc Ty
+% STLC = σ ‵STLC λ where
+%   (App  i j) → ‵X [] (i ⇒ j) (‵X [] i (▪ j))
+%   (Lam  i j) → ‵X (i ∷ []) j (▪ (i ⇒ j))
+% 	\end{code}
+% \end{frame}
+
+\begin{frame}[fragile]{Generic Functions for the Whole Universe}
+	\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{28}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{35}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{47}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Conid{Var}\;\Varid{σ}\;\Conid{Γ}\;\mathrel{=}\;\Conid{Γ}\;\Varid{∋}\;\Varid{σ}{}\<[E]%
 \\[\blanklineskip]%
-\>[B]{}\Conid{STLCD}\;\mathbin{:}\;\Conid{Desc}\;\Conid{Type}{}\<[E]%
+\>[B]{}\Conid{Renaming}\;\mathbin{:}\;\Varid{∀}\;\{\mskip1.5mu \Varid{d}\;\mathbin{:}\;\Conid{Desc}\;\Conid{I}\mskip1.5mu\}\;\Varid{→}\;\Conid{Semantics}\;\Varid{d}\;\Conid{Var}\;(\Conid{Tm}\;\Varid{d}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{rename}\;\mathbin{:}\;\Varid{∀}\;\{\mskip1.5mu \Varid{d}\;\mathbin{:}\;\Conid{Desc}\;\Conid{I}\mskip1.5mu\}\;\Varid{→}\;(\Varid{∀}\;\{\mskip1.5mu \Varid{σ}\mskip1.5mu\}\;{}\<[35]%
+\>[35]{}\Varid{→}\;\Conid{Var}\;\Varid{σ}\;\Conid{Γ}\;{}\<[47]%
+\>[47]{}\Varid{→}\;\Conid{Var}\;\Varid{σ}\;\Conid{Δ})\;{}\<[E]%
+\\
+\>[B]{}\hsindent{28}{}\<[28]%
+\>[28]{}\Varid{∀}\;\{\mskip1.5mu \Varid{τ}\mskip1.5mu\}\;{}\<[35]%
+\>[35]{}\Varid{→}\;\Conid{Tm}\;\Varid{d}\;\Varid{τ}\;\Conid{Γ}\;{}\<[47]%
+\>[47]{}\Varid{→}\;\Conid{Tm}\;\Varid{d}\;\Varid{τ}\;\Conid{Δ}{}\<[E]%
+\\
+\>[B]{}\Varid{rename}\;\mathrel{=}\;\Varid{semantics}\;\Conid{Renaming}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\pause
+Generic programs are \mi{Semantics} records.
+\pause
+
+Functions are realized on fixpoints \mi{Tm} via \mi{semantics}.
+\pause
+
+\mi{rename} can be applied to fixpoints of any description (e.g. $\mi{Tm}\ \mi{STLCD}$).
+\end{frame}
+
+\note{With a universe they can and have defined generic functions that work for a whole family of syntaxes. For example, they have defined a generic renaming function. A semantics datatype with the upper case S, is a description of a generic function given a syntax description d. You can see Renaming here is generic as it's quantified over d. This semantics with uppercase S is just an encoding, the sementics function with lower case S is used to obtain a generic rename function, we can see for every description d, this function works on Tm d. It can be applied given any d, and of course it can be applied given the description of simply typed lambda calculus.}
+
+% \begin{frame}[fragile]{Motivation cont.}
+% 	Programmers prefer ``natural'' datatype and functions,
+% 	\aha{
+% 		\begin{code}
+% rename : ∀ {Γ Δ}  → (∀ {A} → Γ ∋  A → Δ ∋  A)
+%                   → (∀ {A} → Γ ⊢  A → Δ ⊢  A)
+% rename ρ (‵ x)          =  ‵ (ρ x)
+% rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
+% rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)
+% 
+% Renaming : Semantics Var Lam
+% Renaming = record
+%   { th^V  = th^Var
+%   ; var   = ‘var
+%   ; app   = ‘app
+%   ; lam   = λ b → ‘lam (b weaken z) }
+% rename = semantics Renaming
+% 		\end{code}
+% 	}{
+% 		\begin{code}
+% data _⊢_ : Context → Ty → Set where
+%   ‵_     : Γ ∋ A → Γ ⊢ A
+%   ƛ_     : Γ , A ⊢ B → Γ ⊢ A ⇒ B
+%   _·_    : Γ ⊢ A ⇒ B → Γ ⊢ A → Γ ⊢ B
+% 		\end{code}
+% 	\begin{code}
+% STLC : Desc Ty
+% STLC = σ ‵STLC λ where
+%   (App  i j) → ‵X [] (i ⇒ j) (‵X [] i (▪ j))
+%   (Lam  i j) → ‵X (i ∷ []) j (▪ (i ⇒ j))
+% 	\end{code}
+% 	}
+% \end{frame}
+
+% \begin{frame}[fragile]{Motivation cont.}
+% 	\begin{columns}[T]
+% 		\begin{column}{0.5\textwidth}
+% 		``Natural'' function:
+% 		\begin{code}
+% rename : ∀ {Γ Δ}
+%        → (∀ {A} → Γ ∋  A → Δ ∋  A)
+%        → (∀ {A} → Γ ⊢  A → Δ ⊢  A)
+% rename ρ (‵ x)          =  ‵ (ρ x)
+% rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
+% rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)
+% 		\end{code}
+% 		\end{column}
+% 
+% 		\begin{column}{0.5\textwidth}
+% 		Generic function:
+% 		\begin{code}
+% Renaming : Semantics Var Lam
+% Renaming = record
+%   { th^V  = th^Var
+%   ; var   = ‘var
+%   ; app   = ‘app
+%   ; lam   = λ b → ‘lam (b weaken z) }
+% rename = semantics Renaming
+% 		\end{code}
+% 		\end{column}
+% 	\end{columns}
+% \end{frame}
+% 
+% \note{We think that one of the reasons these generic libraries are not widely adopted is because the definitions are not intuitive. Here is a comparison, we think function definitions on the left is more popular and have better properties for programming language researchers. }
+
+\begin{frame}[fragile]{Problems with Syntax Universes: Readability}
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+	\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{8}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mathbf{data}\;\Varid{\char95 ⊢\char95 }\;\mathbin{:}\;\Conid{Context}\;\Varid{→}\;\Conid{Ty}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{‵\char95 }\;{}\<[8]%
+\>[8]{}\mathbin{:}\;\Conid{Γ}\;\Varid{∋}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{ƛ\char95 }\;{}\<[8]%
+\>[8]{}\mathbin{:}\;\Conid{Γ}\;\Varid{,}\;\Conid{A}\;\Varid{⊢}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{⇒}\;\Conid{B}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{\char95 ·\char95 }\;{}\<[8]%
+\>[8]{}\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{⇒}\;\Conid{B}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{B}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{column}
+\begin{column}{0.5\textwidth}
+	\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{9}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Conid{STLCD}\;\mathbin{:}\;\Conid{Desc}\;\Conid{Ty}{}\<[E]%
 \\
 \>[B]{}\Conid{STLCD}\;\mathrel{=}\;\Varid{‵σ}\;\Varid{‵STLC}\;\Varid{λ}\;\mathbf{where}{}\<[E]%
 \\
@@ -751,248 +982,207 @@ encoded in \mi{Desc}:
 \end{hscode}\resethooks
 \end{column}
 \end{columns}
-\pause
-$$\mi{STLC} \cong \mi{STLC'}$$
 \end{frame}
 
-\note{In most such generic libraries, programmers are required to encode their syntax in the given description. For example, a simply-typed lambda calculus here, \mi{Tm} is a type constructor that takes the fixpoint of the functor of a description. We may prove that a syntax defined as a isolated datatype is isomorphic to the fixpoint of some functor, but the programmer shall never use the isolated datatype definition again, what happens in the generic universe stays in that generic universe. }
+\note{We quickly summerize what we think are the reasons these libraries are not widely adopted. First of all is readability. One merit of intrinsic typing is that types of constructors closely resemble typing rules, and typing rules are less obvious for syntaxes defined in generic universes.}
 
-% \begin{frame}[fragile]{Existing work by Allais et al.}
-% 	\begin{code}
-% STLC : Desc Type
-% STLC = σ ‵STLC λ where
-%   (App  i j) → ‵X [] (i ⇒ j) (‵X [] i (▪ j))
-%   (Lam  i j) → ‵X (i ∷ []) j (▪ (i ⇒ j))
-% 	\end{code}
-% \end{frame}
-
-\begin{frame}[fragile]{Existing work by Allais et al.}
-	Generic programs are \mi{Semantics} records.
-
-	Functions are realized on fixpoints \mi{Tm} via \mi{semantics}.
+\begin{frame}[fragile]{Problems with Syntax Universes: Burden on Programmers}
 	\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{35}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{9}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{13}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\Conid{Renaming}\;\mathbin{:}\;\Varid{∀}\;\{\mskip1.5mu \Varid{d}\;\mathbin{:}\;\Conid{Desc}\;\Conid{I}\mskip1.5mu\}\;\Varid{→}\;\Conid{Semantics}\;\Varid{d}\;\Conid{Var}\;(\Conid{Tm}\;\Varid{d}){}\<[E]%
+\>[B]{}\mathbf{data}\;\Conid{Desc}\;(\Conid{I}\;\mathbin{:}\;\Conid{Set})\;\mathbin{:}\;\Conid{Set₁}\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{9}{}\<[9]%
+\>[9]{}\Varid{‵σ}\;{}\<[13]%
+\>[13]{}\mathbin{:}\;(\Conid{A}\;\mathbin{:}\;\Conid{Set})\;\Varid{→}\;(\Conid{A}\;\Varid{→}\;\Conid{Desc}\;\Conid{I})\;\Varid{→}\;\Conid{Desc}\;\Conid{I}{}\<[E]%
+\\
+\>[B]{}\hsindent{9}{}\<[9]%
+\>[9]{}\Varid{‵X}\;{}\<[13]%
+\>[13]{}\mathbin{:}\;\Conid{List}\;\Conid{I}\;\Varid{→}\;\Conid{I}\;\Varid{→}\;\Conid{Desc}\;\Conid{I}\;\Varid{→}\;\Conid{Desc}\;\Conid{I}{}\<[E]%
+\\
+\>[B]{}\hsindent{9}{}\<[9]%
+\>[9]{}\Varid{‵▪}\;{}\<[13]%
+\>[13]{}\mathbin{:}\;\Conid{I}\;\Varid{→}\;\Conid{Desc}\;\Conid{I}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{frame}
+
+\note{Secondly, to utilize such generic libraries, programmers are required to understand the generic universe instead of just defining syntaxes the way they want. }
+
+\begin{frame}[fragile]{Problems with Syntax Universes: Interoperability}
+	\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Conid{STLCD}\;\mathbin{:}\;\Conid{Desc}\;\Conid{Ty}{}\<[E]%
+\\
+\>[B]{}\Conid{STLCD}\;\mathrel{=}\;\Varid{...}{}\<[E]%
 \\[\blanklineskip]%
-\>[B]{}\Varid{rename}\;\mathbin{:}\;\Varid{∀}\;\{\mskip1.5mu \Varid{d}\;\mathbin{:}\;\Conid{Desc}\;\Conid{I}\mskip1.5mu\}\;\Varid{→}\;(\Varid{∀}\;\{\mskip1.5mu \Varid{i}\mskip1.5mu\}\;{}\<[35]%
-\>[35]{}\Varid{→}\;\Conid{Var}\;\Varid{i}\;\Conid{Γ‘}\;\Varid{→}\;\Conid{Var}\;\Varid{i}\;\Conid{Δ})\;{}\<[E]%
+\>[B]{}\Conid{STLCD'}\;\mathbin{:}\;\Conid{Desc'}\;\Varid{???}{}\<[E]%
 \\
-\>[35]{}\Varid{→}\;\Conid{Tm}\;\Varid{d}\;\Varid{j}\;\Conid{Γ}\;\Varid{→}\;\Conid{Tm}\;\Varid{d}\;\Varid{j}\;\Conid{Δ}{}\<[E]%
-\\
-\>[B]{}\Varid{rename}\;\mathrel{=}\;\Varid{semantics}\;\Conid{Renaming}{}\<[E]%
+\>[B]{}\Conid{STLCD'}\;\mathrel{=}\;\Varid{???}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
-\mi{rename} can be applied to fixpoints of any description (e.g. $\mi{Tm}\ \mi{STLC}$).
 \end{frame}
 
-\note{Likewise, generic functions in these libraries require specific descriptions, such that we can define functions that work for a whole family of syntaxes. In this case, the sementics function with lower case S is used to interpret the semantics description with upper case S, and we can obtain a rename function that is very similar to what we have defined previously. You can see it is generic as it works on Tm d for every d.}
+\note{And they need to learn a new generic construction or representation everytime they want some features only exist in another generic library, even though they are working on the same syntax, it must be redefined. This leads us to te third problem, interoperability. It would be hard to use two or more generic libraries at once.}
 
-% \begin{frame}[fragile]{Motivation cont.}
-% 	Programmers prefer ``natural'' datatype and functions,
-% 	\aha{
-% 		\begin{code}
-% rename : ∀ {Γ Δ}  → (∀ {A} → Γ ∋  A → Δ ∋  A)
-%                   → (∀ {A} → Γ ⊢  A → Δ ⊢  A)
-% rename ρ (‵ x)          =  ‵ (ρ x)
-% rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
-% rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)
-% 
-% Renaming : Semantics Var Lam
-% Renaming = record
-%   { th^V  = th^Var
-%   ; var   = ‘var
-%   ; app   = ‘app
-%   ; lam   = λ b → ‘lam (b weaken z) }
-% rename = semantics Renaming
-% 		\end{code}
-% 	}{
-% 		\begin{code}
-% data _⊢_ : Context → Type → Set where
-%   ‵_     : Γ ∋ A → Γ ⊢ A
-%   ƛ_     : Γ , A ⊢ B → Γ ⊢ A ⇒ B
-%   _·_    : Γ ⊢ A ⇒ B → Γ ⊢ A → Γ ⊢ B
-% 		\end{code}
-% 	\begin{code}
-% STLC : Desc Type
-% STLC = σ ‵STLC λ where
-%   (App  i j) → ‵X [] (i ⇒ j) (‵X [] i (▪ j))
-%   (Lam  i j) → ‵X (i ∷ []) j (▪ (i ⇒ j))
-% 	\end{code}
-% 	}
-% \end{frame}
-
-\begin{frame}[fragile]{Motivation cont.}
-	\begin{columns}[T]
-		\begin{column}{0.5\textwidth}
-		``Natural'' function:
+\begin{frame}[fragile]{Problems with Syntax Universes: Interoperability}
+\begin{columns}[T]
+	\begin{column}{0.4\textwidth}
 		\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{8}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{24}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{25}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{28}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{33}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\Varid{rename}\;\mathbin{:}\;\Varid{∀}\;\{\mskip1.5mu \Conid{Γ}\;\Conid{Δ}\mskip1.5mu\}\;{}\<[E]%
+\>[B]{}\Varid{f}\;\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{ℕ}{}\<[E]%
 \\
-\>[B]{}\hsindent{8}{}\<[8]%
-\>[8]{}\Varid{→}\;(\Varid{∀}\;\{\mskip1.5mu \Conid{A}\mskip1.5mu\}\;\Varid{→}\;\Conid{Γ}\;\Varid{∋}\;{}\<[24]%
-\>[24]{}\Conid{A}\;\Varid{→}\;\Conid{Δ}\;\Varid{∋}\;{}\<[33]%
-\>[33]{}\Conid{A})\;{}\<[E]%
-\\
-\>[B]{}\hsindent{8}{}\<[8]%
-\>[8]{}\Varid{→}\;(\Varid{∀}\;\{\mskip1.5mu \Conid{A}\mskip1.5mu\}\;\Varid{→}\;\Conid{Γ}\;\Varid{⊢}\;{}\<[24]%
-\>[24]{}\Conid{A}\;\Varid{→}\;\Conid{Δ}\;\Varid{⊢}\;{}\<[33]%
-\>[33]{}\Conid{A}){}\<[E]%
-\\
-\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{‵}\;\Varid{x})\;{}\<[25]%
-\>[25]{}\mathrel{=}\;{}\<[28]%
-\>[28]{}\Varid{‵}\;(\Varid{ρ}\;\Varid{x}){}\<[E]%
-\\
-\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Varid{ƛ}\;\Conid{N})\;{}\<[25]%
-\>[25]{}\mathrel{=}\;{}\<[28]%
-\>[28]{}\Varid{ƛ}\;(\Varid{rename}\;(\Varid{ext}\;\Varid{ρ})\;\Conid{N}){}\<[E]%
-\\
-\>[B]{}\Varid{rename}\;\Varid{ρ}\;(\Conid{L}\;\Varid{·}\;\Conid{M})\;{}\<[25]%
-\>[25]{}\mathrel{=}\;{}\<[28]%
-\>[28]{}(\Varid{rename}\;\Varid{ρ}\;\Conid{L})\;\Varid{·}\;(\Varid{rename}\;\Varid{ρ}\;\Conid{M}){}\<[E]%
+\>[B]{}\Varid{f}\;\Varid{t}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!}\;\mid \;\mathbin{!}\mskip1.5mu\}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
-		\end{column}
-
-		\begin{column}{0.5\textwidth}
-		Generic function:
-		\begin{hscode}\SaveRestoreHook
-\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{11}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\Conid{Renaming}\;\mathbin{:}\;\Conid{Semantics}\;\Conid{Var}\;\Conid{Lam}{}\<[E]%
-\\
-\>[B]{}\Conid{Renaming}\;\mathrel{=}\;\mathbf{record}{}\<[E]%
-\\
-\>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\{\mskip1.5mu \Varid{th\char94 V}\;{}\<[11]%
-\>[11]{}\mathrel{=}\;\Varid{th\char94 Var}{}\<[E]%
-\\
-\>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{};\Varid{var}\;{}\<[11]%
-\>[11]{}\mathrel{=}\;\Varid{‘var}{}\<[E]%
-\\
-\>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{};\Varid{app}\;{}\<[11]%
-\>[11]{}\mathrel{=}\;\Varid{‘app}{}\<[E]%
-\\
-\>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{};\Varid{lam}\;{}\<[11]%
-\>[11]{}\mathrel{=}\;\Varid{λ}\;\Varid{b}\;\Varid{→}\;\Varid{‘lam}\;(\Varid{b}\;\Varid{weaken}\;\Varid{z})\mskip1.5mu\}{}\<[E]%
-\\
-\>[B]{}\Varid{rename}\;\mathrel{=}\;\Varid{semantics}\;\Conid{Renaming}{}\<[E]%
-\ColumnHook
-\end{hscode}\resethooks
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\note{We conclude that one of the reasons these generic libraries are not widely adopted is because the definitions are not intuitive. Here is a comparison, we think function definitions on the left is more popular and have better properties for programming language researchers. }
-
-\begin{frame}[fragile]{Motivation cont.}
-	Problems with using syntax universes:
+Ctrl + C $\downarrow$
 	\pause
-	\begin{enumerate}
-		\item Readability
-		\pause
-		\item Extra work for programmers
-		\pause
-		\item Interoperability with existing tools/IDEs
-		\pause
-		\item Interoperability with existing libraries
-	\end{enumerate}
+		\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{12}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{15}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{21}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{f}\;\mathbin{:}\;\Conid{Γ}\;\Varid{⊢}\;\Conid{A}\;\Varid{→}\;\Conid{ℕ}{}\<[E]%
+\\
+\>[B]{}\Varid{f}\;(\Varid{‵}\;\Varid{x})\;{}\<[12]%
+\>[12]{}\mathrel{=}\;{}\<[15]%
+\>[15]{}\{\mskip1.5mu \mathbin{!}\;{}\<[21]%
+\>[21]{}\mathbin{!}\mskip1.5mu\}{}\<[E]%
+\\
+\>[B]{}\Varid{f}\;(\Varid{ƛ}\;\Conid{N})\;{}\<[12]%
+\>[12]{}\mathrel{=}\;{}\<[15]%
+\>[15]{}\{\mskip1.5mu \mathbin{!}\;{}\<[21]%
+\>[21]{}\mathbin{!}\mskip1.5mu\}{}\<[E]%
+\\
+\>[B]{}\Varid{f}\;(\Conid{L}\;\Varid{·}\;\Conid{M})\;{}\<[12]%
+\>[12]{}\mathrel{=}\;{}\<[15]%
+\>[15]{}\{\mskip1.5mu \mathbin{!}\;\mid \;{}\<[21]%
+\>[21]{}\mathbin{!}\mskip1.5mu\}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+	\end{column}
+	\pause
+	\begin{column}{0.4\textwidth}
+	\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{f}\;\mathbin{:}\;\Conid{Tm}\;\Varid{d}\;\Varid{τ}\;\Conid{Γ}\;\Varid{→}\;\Conid{ℕ}{}\<[E]%
+\\
+\>[B]{}\Varid{f}\;\Varid{t}\;\mathrel{=}\;\{\mskip1.5mu \mathbin{!}\;\mid \;\mathbin{!}\mskip1.5mu\}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+Ctrl + C $\downarrow$
+	\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{???}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+	\end{column}
+\end{columns}
 \end{frame}
 
-\note{The downsides of generic libraries can be summarized as such: First of all, readability. One merit of intrinsic typing is that types of constructors closely resemble typing rules, as we can see previously, typing rules are less obvious for syntaxes defined in generic universes. Secondly, to utilize such generic libraries, programmers are required to understand the generic universe instead of just defining syntaxes the way they want, and they need to learn a new generic construction or representation everytime they want some features only exist in another generic library, even though they are working on the same syntax. This leads us to te third problem, interoperability. It's not only hard to use two or more generic libraries at once, it's also very difficult to use any libaries that was applicable to natural definitions. The interoperability with existing tools also suffer, for example, it was clear that for every typing rule their is a clause for the rename function, because every typing rule corresponds to one constructor. Here we can utilize the case-spliting mechanism provided by Agda's editor mode, and we can easily see how many clauses we should define for a rename function. We can't benefit from these tools or existing IDE supports when using generic universes, for there's no such correspondence.}
+\note{The interoperability with existing tools also suffer, for example, because every typing rule corresponds to one constructor, we can utilize the case-spliting mechanism provided by Agda's editor mode, by placing te cursor in th hole of f, and press Ctrl and C in the Emacs or VS Code editor, we can easily see how many clauses we should define for a function that takes a natural term. We can't benefit from these tools or existing IDE supports when using generic universes, case spliting on Tm would work, but it will look like a mess.}
 
 \section{Elaborator Reflection to the Rescue}
 
 \note{Therefore, we want the best from both worlds, we want programmers and researchers to use native definitions whenever possible, while generic programs can still be invoked. We acheive this by elaborator reflection. Elaborator reflection is the metaprogramming mechanism provided by Agda, it allows us to read and define datatype and function definitions.}
 
 \begin{frame}[fragile]{Elaborator Reflection to the Rescue}
-	``Datatype-Generic Programming Meets Elaborator Reflection'' at 15:50, Tuesday.
+	``Datatype-Generic Programming Meets Elaborator Reflection'' by Josh Ko, Liang-Ting Chen, and Tzu-Chi Lin
+	at 15:50, Tuesday.
 
 	\pause
 
 	Syntax-generic operations \emph{are} Datatype-generic programs with constraints.
 \end{frame}
 
-\note{I would like to shamelessly promote the other work we are publishing, Datatype-Generic Programming Meets Elaborator Reflection. Josh will present it on Tuesday at the main conference. Josh, my advisor, Liang-Ting, my co-worker, and I, we have demostrated in that work on how to mix elaborator reflection with datatype-generic programming, such  we can define programs that work for a family of datatypes, while using elaborator reflection to reify such programs as natural function definitions defined on native datatypes. What does this have to do with syntax-generic libraries that we spent so much time intorducing? It turns out, syntax-generic programs can sometimes be seem as a subset of datatype-generic programs. In this case, we can constrain a subset of all datatypes such that datatypes in this subset are also describable by Allais et al.'s library.}
+\note{I would like to shamelessly promote the other work we are presenting at ICFP, Datatype-Generic Programming Meets Elaborator Reflection. Josh will present it on Tuesday. We have demostrated in that work on how to mix elaborator reflection with datatype-generic programming, such we can define programs that work for a family of datatypes, while using elaborator reflection to reify such programs as natural function definitions defined on native datatypes. What does this have to do with syntax-generic libraries that we spent so much time intorducing? It turns out, syntax-generic programs can sometimes be seem as a subset of datatype-generic programs. In this case, we can constrain a subset of all datatypes such that datatypes in this subset are also describable by Allais et al.'s library.}
 
-\begin{frame}[fragile]{The ideal process}
+\begin{frame}[fragile]{The process}
 	\begin{enumerate}
 		\item The programmer defines a native datatype $T$.
 		\pause
 		\item A metaprogram generates the description $D$ of $T$.
 		\pause
-		\item The programmer provides a proof $S$ of $D$ that says $T$ is indeed a syntax.
+		\item The programmer chooses a description $P$ from a set of pre-defined generic programs.
 		\pause
-		\item The programmer choose one description $P$ from a set of pre-defined generic programs.
-		\pause
-		\item A metaprogram takes $D$, $S$, and $P$, generates a native function accordingly.
+		\item A metaprogram takes $D$ and $P$, generates a native function accordingly.
 	\end{enumerate}
 \end{frame}
 
-\note{By introducing datatype-generic programming and metaprograms, let's see what we think is the better process here for a programmer? Firstly they define a native datatype that we know to be a syntax, instead of relying on any generic description. Then by metaprograms in our datatype-generic library, they get the datatype description of that datatype. The programmer then proves the datatype to be a syntax by providing a proof of our pre-defined predicate. Then they can choose a generic program to reify. This generic program is pre-defined by the ``geneic library programmers'', who has defined what generic programs exist for what subsets, here the chosen programs must work on datatypes constrained by $S$ which are syntaxes. Lastly, another metaprogram takes all these things, $D$, $S$, $P$, and gives the programmer a native, reifed funtion definition, as if nothing generic happens.}
+\note{Now let us skip the introduction of datatype-generic programming and metaprograms. To get the whole picture, let's do a rundown of our alternative process for a programmer to invoke generic programs. Firstly they define a native datatype that we know to be a syntax, instead of relying on any generic description. Then by metaprograms in our datatype-generic library, they get the datatype description of that datatype. Then the programmer can choose a generic program to reify. This generic program is pre-defined by the ``geneic library programmers''. Lastly, another metaprogram takes $D$ and $P$, and gives the programmer a native, reifed funtion definition that works on $S$, as if everything is defined by hands.}
+
+\begin{frame}[fragile]{The process}
+	\begin{enumerate}
+		\item The programmer defines a native datatype $T$.
+		\item A metaprogram generates the description $D$ of $T$.
+		\item {\color{red} The programmer provides a proof $S$ of $D$ that says $T$ is indeed a syntax.}
+		\item The programmer chooses a description $P$ from a set of pre-defined generic programs.
+		\item A metaprogram takes $D$, {\color{red} $S$}, and $P$, generates a native function accordingly.
+	\end{enumerate}
+\end{frame}
+
+\note{We know that the description $D$, generated from a syntax datatype is a syntax, but how does the generic library know? To pre-define a datatype-generic program that work specifically on a family of syntax, we must also pre-define a predicate that says a datatype is indeed a member of the syntax family. So the process we just mentioned is not suffient. The ``geneic library'' should also provide predicates that constrain general datatypes, saying what generic programs exist for what kinds of datatypes, in this case the syntaxes. and the programmer must provide a proof of this predicate when choosing a generic program to reify. So the process we just showed actually requires an extra step, that is the programmer must provide proofs of the datatype $T$ being a syntax.}
 
 \begin{frame}[fragile]{Flow Chart}
 \includegraphics[width=\columnwidth]{Diagram1.pdf}
 \end{frame}
 
-\note{}
+\note{Let's do a rundown again, but with our actual definitions. We have three worlds here, the user's own world, the syntax-datatype-generic library, and metaprograms. Say the user defines a language called Lam, indexed by the type and context of a term.}
 
 \begin{frame}[fragile]{Flow Chart}
 \includegraphics[width=\columnwidth]{Diagram2.pdf}
 \end{frame}
 
+\note{They can invoke a metaprogram genDataD, which generates a datatype description of type DataD, we call it LamD.}
+
 \begin{frame}[fragile]{Flow Chart}
 \includegraphics[width=\columnwidth]{Diagram3.pdf}
 \end{frame}
+
+\note{Then to use the generic library, the user must provide a proof that the description we just generated is syntax. Here Syntax is the predicate, and we call the proof LamSyn.}
 
 \begin{frame}[fragile]{Flow Chart}
 \includegraphics[width=\columnwidth]{Diagram4.pdf}
 \end{frame}
 
+\note{Then it's the job for the generic library. Renaming here is a function that generates syntax-generic programs. Syntax-generic programs are represented as Semantics.}
+
 \begin{frame}[fragile]{Flow Chart}
 \includegraphics[width=\columnwidth]{Diagram5.pdf}
 \end{frame}
+
+\note{But our metaprograms that generates native functions are for datatype-generic programs. so we need another translation in the generic library that is from syntax-generic programs to datatype-generic programs. SemP is this translation and FoldP is the type of datatype-generic fold programs.}
 
 \begin{frame}[fragile]{Flow Chart}
 \includegraphics[width=\columnwidth]{Diagram6.pdf}
 \end{frame}
 
-\begin{frame}[fragile]{Provided by our datatype-generic library}
+\note{Finally, defineFold is a metaprogram that generates actual function definitions. So the user doesn't need to understand the detailed definitions in the generic libary, they can write native datatype and get native function definitions if they know what metaprograms and functions to call.}
+
+\begin{frame}[fragile]{Some of Our Contributions}
+In ``Datatype-generic Programming Meets Elaborator Reflection'':
 	\begin{itemize}
-		\item a generic description \mi{DataD} for Agda's inductive datatypes,
-		\pause
-		\item generic program descriptions \mi{FoldP} for folds (and \mi{IndP} for inductions),
-		\pause
-		\item a metaprogram \mi{genDataD} that generates datatype descriptions from their native definitions, and 
-		\pause
-		\item a metaprogram \mi{defineFold} that generates function definitions from their generic representations.
+		\item \mi{DataD}
+		\item \mi{FoldP} for folds (and \mi{IndP} for inductions)
+		\item metaprogram \mi{genDataD}
+		\item metaprogram \mi{defineFold}
+	\end{itemize}
+\pause
+In this work:
+	\begin{itemize}
+		\item predicate \mi{Syntax} on \mi{DataD} that captures \mi{Desc}.
+		\item function \mi{SemP} that generates \mi{FoldP} from \mi{Syntax} proofs.
 	\end{itemize}
 \end{frame}
 
-\note{Here we introduce very berifly how we mixed datatype-generic programming with elaborator reflection. We have a generic description for all inductive datatypes and descriptions for generic programs, such }
-
-\begin{frame}[fragile]{Elaborator Reflection to the Rescue}
-	We further define:
-	\begin{itemize}
-		\item a predicate \mi{Syntax} on \mi{DataD} that captures \mi{Desc}.
-		\item a function \mi{SemP} that generates \mi{FoldP} from \mi{Syntax} proofs.
-	\end{itemize}
-\end{frame}
-
-\note{What does datatype-generic programming has to do with syntax-generic operations? We see that what the syntaxes programmers want are actually classic Agda inductive datatypes}
+\note{These are our contributions. These four are already provided in our other work that we have mentioned. DataD is datatype description, FoldP is description of datatype-generic programs which are folds, genDataD is the metaprogram for reading datatype description and defineFold is for generating native function from descriptions.  In this work, we introduce a framework that ports syntax-generic libraries to more datatype-generic ones, by defining the predicate Syntax and some translation functions built around this predicate.}
 
 
 \begin{frame}[fragile]{The \mi{Syntax} Predicate}
@@ -1015,7 +1205,12 @@ $$\mi{STLC} \cong \mi{STLC'}$$
 	\end{itemize}
 \end{frame}
 
+\note{Unfortunately our time is limited, we can't go into the details of the Syntax predicate.}
+
+
 \begin{frame}[fragile]{The \mi{Syntax} Predicate}
+\begin{columns}[T]
+	\begin{column}{0.5\textwidth}
 Does \mi{PCF} satisfies \mi{Syntax}?
 	\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -1023,7 +1218,7 @@ Does \mi{PCF} satisfies \mi{Syntax}?
 \column{10}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{27}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\mathbf{data}\;\Conid{PCF}\;\mathbin{:}\;\Conid{Type}\;\Varid{→}\;\Conid{Context}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
+\>[B]{}\mathbf{data}\;\Conid{PCF}\;\mathbin{:}\;\Conid{Ty}\;\Varid{→}\;\Conid{Context}\;\Varid{→}\;\Conid{Set}\;\mathbf{where}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
 \>[3]{}\Varid{‵var}\;{}\<[10]%
@@ -1047,16 +1242,15 @@ Does \mi{PCF} satisfies \mi{Syntax}?
 \>[10]{}\mathbin{:}\;\Conid{PCF}\;\Varid{‵ℕ}\;\Conid{Γ}\;\Varid{→}\;\Conid{PCF}\;\Varid{‵ℕ}\;\Conid{Γ}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
-\end{frame}
-
-\begin{frame}[fragile]{The \mi{Syntax} Predicate}
-	\metroset{block=fill}
-	\begin{exampleblock}{A Syntax proof example}
+	\end{column}
+	\pause
+	\begin{column}{0.5\textwidth}
+	Proof of PCF being Syntax:
 		\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{9}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\Conid{SyntaxPCF}\;\mathbin{:}\;\Conid{Syntax}\;\Conid{Type}\;(\Varid{genDataD}\;(\Varid{quote}\;\Conid{PCF})){}\<[E]%
+\>[B]{}\Conid{SyntaxPCF}\;\mathbin{:}\;\Conid{Syntax}\;\Conid{Ty}\;(\Varid{genDataD}\;\Conid{PCF}){}\<[E]%
 \\
 \>[B]{}\Conid{SyntaxPCF}\;\mathrel{=}\;\anonymous \;{}\<[E]%
 \\
@@ -1091,43 +1285,29 @@ Does \mi{PCF} satisfies \mi{Syntax}?
 \>[9]{}\Varid{,}\;\Varid{tt}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
-	\end{exampleblock}
+	\end{column}
+\end{columns}
 \end{frame}
+
+\note{But we can shortly emphasize on something that concerned us when developing this framework, that is the complexity of the Syntax proof. If this proof is too complex, probaly no one would want to use it. Fortunately, it turns out proving something to be a syntax is actually pretty straightforward. Let's see an example. Suppose we define a language called PCF, which has five constructors. for this PCF datatype to be a syntax, a lot of things has to be considered, like the datatype's universe level, numbers of parameters and indices, and constraints on each field of each constructor. For example, in this case the parameters must be empty and there must be exactly two indices, a type and a list of type. Fortunately, these constraints are mostly equality proofs, and once the programmer provides a datatype that satisfies these conditions, these can be proved by simply using the refl constructor. Proofs of different datatypes being syntaxes look pretty much the same and there are some simple rules to follow, so it is possible to write yet another metaprogram for generating such proofs. Which is a future work we haven't done yet.}
 
 % \begin{frame}[fragile]{Translation from Semantics to natural looking functions}
 % \end{frame}
 
-\section{Demo}
+\section{Discussion}
 
-\section{Discussion: towards datatype-generic libraries for syntaxes?}
-
-\begin{frame}[fragile]{Future Works \& Issues}
-	\begin{itemize}
-		\item \mi{Syntax} proof automation
-		\item User interface
-		\item Port more generic libraries:
-		\pause
-			\begin{itemize}
-				% \item Expressiveness is limited by Agda datatypes as well as the generic universe, a \mi{Syntax} predicate must be defined.
-				% \pause
-				% \item Even if we can define \mi{Syntax}, the proof could be more complicated, even require programmers to understand the generic universe.
-				% \pause
-				% \item Obstacles of using multiple generic libraries at once.
-				% \pause
-				% \item Are folds and inductions enough?
-				\item Expressiveness
-				\pause
-				\item Complexity of \mi{Syntax}
-				\pause
-				\item Interoperability
-				\pause
-				\item Are folds and inductions enough?
-			\end{itemize}
-	\pause
-	\end{itemize}
+\begin{frame}[fragile]{Towards Datatype-generic Libraries for Syntaxes?}
+		% \item Expressiveness is limited by Agda datatypes as well as the generic universe, a \mi{Syntax} predicate must be defined.
+		% \pause
+		% \item Even if we can define \mi{Syntax}, the proof could be more complicated, even require programmers to understand the generic universe.
+		% \pause
+		% \item Obstacles of using multiple generic libraries at once.
+		% \pause
+		% \item Are folds and inductions enough?
+		Do we really need syntax-generic libraries?
 \end{frame}
 
-\section{Q \& A}
+\note{Finally, let's talk about the cons. More issues will arise if we start porting more syntax-generic libraries other than Allais et al.'s. First of all we are still limited by a universe, that is the Agda inductive datatype universe. What is expressible in other universes might not find their conterparts as native datatypes. Then for more complicated universes, the Syntax proofs could be more complicated and not so straightforward.  Feel free to share your thoughts on this framework, does it look promising or are there critical issues making it undesirable? Please let us know.}
 
 \end{document}
 
