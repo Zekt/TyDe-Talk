@@ -1,4 +1,4 @@
-\documentclass[10pt,xcolor=svgnames,aspectratio=169,notes]{beamer} %Beamer
+\documentclass[10pt,xcolor=svgnames,aspectratio=169]{beamer} %Beamer
 \usepackage{palatino} %font type
 \usefonttheme{metropolis} %Type of slides
 \usefonttheme[onlymath]{serif} %font type Mathematical expressions
@@ -347,14 +347,14 @@
 \metroset{titleformat frame=smallcaps} %This changes the titles for small caps
 
 \note{Hello everyone, my name is Tzu-Chi, I am a research assistant from Academia Sinica in Taiwan.
-Today I will be talking about the joint work of my advisor's and mine, it's "Syntax-generic Operations, Reflectively Reified".}
+Today I will be talking about the joint work of my advisor's and mine, the title is "Syntax-generic Operations, Reflectively Reified". So firstly we will see what are syntax-generic operations, then I will elaborate what Reflectively reified means.}
 
 % \begin{frame}[fragile]{Outline}
 % \setbeamertemplate{section in toc}[sections numbered] %This is numbering the sections
 % \tableofcontents[hideallsubsections] %You can comment this line if you want to show the subsections in the table of contents
 % \end{frame}
 
-\note{Firstly, I will introduce some backgrounds and our motivations, including the existing work we base on. In general, we apply the techniques we introduced in our another work, "Datatype-Generic Programming Meets Elaborator Reflection", which Josh will present on Tuesday. We apply the techniques in that work on a common problem for depentely typed programmers. I will show you a demo if we have time, and most importantly, we want to know your opinions on it. Is this a better approach? Will you want to use it? Hopefully we can get some feedbacks after this talk.}
+%\note{Firstly, I will introduce some backgrounds and our motivations, including the existing work we base on. In general, we apply the techniques we introduced in our another work, "Datatype-Generic Programming Meets Elaborator Reflection", which Josh will present on Tuesday. We apply the techniques in that work on a common problem for depentely typed programmers. I will show you a demo if we have time, and most importantly, we want to know your opinions on it. Is this a better approach? Will you want to use it? Hopefully we can get some feedbacks after this talk.}
 
 
 \begin{frame}[fragile]{Typical Languages in Languages}
@@ -434,7 +434,7 @@ Today I will be talking about the joint work of my advisor's and mine, it's "Syn
 	% }
 \end{frame}
 
-\note{For starters, Let's take a look at a common thing dependently typed programmers would do, that is defining a programming language in a dependently typed programming language, such as Agda. It's a language in language. Here is an example of the syntax of a language defined in Agda. It's a simply-typed lambda calculus, and with the help of intrinsic typing, the syntax definition is very concise. We define a datatype called Ty to describe the possible types for this language, that the term is either of a single type or a function type. Here \mi{Context} is defined as the List of Ty. And we have a simple ``has'' relation that represents variables. For if a variable is typed it must be in the context. And we know that a simply typed lambda calculus has three constructions, each having a a typing rule. Here are three constructors, each of them corresponds to the variable rule, the abstraction rule, and the application rule.}
+\note{For starters, Let's take a look at a common thing dependently typed programmers would do, that is defining a programming language in a dependently typed programming language, such as Agda. It's a language in language. Here is an example of the syntax of a language defined in Agda. It's a simply-typed lambda calculus, and with the help of intrinsic typing, the syntax definition is very concise. We define a datatype called Ty to describe the possible types for this language, the term is either of a single type or a function type. Here \mi{Context} is defined as the List of Ty. And we have a simple ``has'' relation that represents variables. For if a variable is typed it must be in the context. And we know that a simply typed lambda calculus has three constructions, each having a a typing rule. Here are three constructors, each of them corresponds to the variable rule, the abstraction rule, and the application rule.}
 
 \begin{frame}
 Scope-safe syntax operations:
@@ -469,7 +469,7 @@ Scope-safe syntax operations:
 \end{hscode}\resethooks
 \end{frame}
 
-\note{Then let's define some operations on this syntax. Such operations are scope-safe. For example, let's define a rename function. A \mi{rename} function says that if there's a mapping from every variable in a context $\varGamma$ to the other context $\varDelta$, we can always find a mapping from every term that is typed in $\varGamma$ to a term typed in $\varDelta$. Because we can remap every variable in that term. If we encounter a subterm that has a extended context, for example, the case of lambda abstraction, the variable mapping should be extended accordingly.}
+\note{Then let's define some operations on this syntax. Such operations are scope-safe. For example, let's define a rename function. A \mi{rename} function says that if there's a mapping from every variable in a context $\varGamma$ to the other context $\varDelta$, we can always find a mapping from every term that is typed in $\varGamma$ to a term typed in $\varDelta$. Because we can remap every variable in that term. If we encounter a subterm that has a extended context, for example, the case of lambda abstraction, the variable mapping should be extended accordingly. We can see the term is still called recursively, but the variable mapping function is modified with ext.}
 
 \begin{frame}[fragile]{Motivation}
 \emph{Intrinsic typing} is common for $\uplambda$-calculus with De Bruijn indices.
