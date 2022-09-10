@@ -1,4 +1,4 @@
-\documentclass[10pt,xcolor=svgnames,aspectratio=169]{beamer} %Beamer
+\documentclass[10pt,xcolor=svgnames,aspectratio=169,notesonly]{beamer} %Beamer
 \usepackage{palatino} %font type
 \usefonttheme{metropolis} %Type of slides
 \usefonttheme[onlymath]{serif} %font type Mathematical expressions
@@ -88,8 +88,8 @@
 
 \metroset{titleformat frame=smallcaps} %This changes the titles for small caps
 
-\note{Hello everyone, my name is Tzu-Chi, I am a research assistant from Academia Sinica in Taiwan.
-Today I will be talking about the joint work of my advisor's and mine, the title is "Syntax-generic Operations, Reflectively Reified". So firstly we will see what are syntax-generic operations, then I will elaborate what Reflectively reified means.}
+\note{Hello everyone, my name is Tzu-Chi, I am a research assistant at Academia Sinica in Taiwan.
+Today I will be talking about the joint work of my advisor's and mine, the title is "Syntax-generic Operations, Reflectively Reified". So firstly we will see what are syntax-generic operations, then I will elaborate on what Reflectively reified means.}
 
 % \begin{frame}[fragile]{Outline}
 % \setbeamertemplate{section in toc}[sections numbered] %This is numbering the sections
@@ -141,7 +141,7 @@ data _∋_ : Context → Ty → Set where
 	% }
 \end{frame}
 
-\note{For starters, Let's take a look at a common thing dependently typed programmers would do, that is defining a programming language in a dependently typed programming language, such as Agda. It's a language in language. Here is an example of the syntax of a language defined in Agda. It's a simply-typed lambda calculus, and with the help of intrinsic typing, the syntax definition is very concise. We define a datatype called Ty to describe the possible types for this language, the term is either of a single type or a function type. Here \mi{Context} is defined as the List of Ty. And we have a simple ``has'' relation that represents variables. For if a variable is typed it must be in the context. And we know that a simply typed lambda calculus has three constructions, each having a a typing rule. Here are three constructors, each of them corresponds to the variable rule, the abstraction rule, and the application rule.}
+\note{For starters, Let's take a look at a common thing dependently typed programmers would do, that is defining a programming language in a dependently typed programming language, such as Agda. Here is an example of the syntax of a language defined in Agda. It's a simply-typed lambda calculus. We define a datatype called Ty to describe the possible types for this language, a term has either a single type or a function type. Here \mi{Context} is defined as the List of Ty. And we have a simple ``has'' relation that represents variables. For if a variable is typed it must be in the context. And we know that a simply typed lambda calculus has three constructions, each corresponding a a typing rule. Here are three constructors, each of them corresponds to the variable rule, the abstraction rule, and the application rule. We can see for a term to be constructed, it must be well-typed by definition, that's what we call intrinsic typing.}
 
 \begin{frame}
 Scope-safe syntax operations:
@@ -154,7 +154,7 @@ rename ρ (L · M)  =  (rename ρ L) · (rename ρ M)
 	\end{code}
 \end{frame}
 
-\note{Then let's define some operations on this syntax. Such operations are scope-safe. For example, let's define a rename function. A \mi{rename} function says that if there's a mapping from every variable in a context $\varGamma$ to the other context $\varDelta$, we can always find a mapping from every term that is typed in $\varGamma$ to a term typed in $\varDelta$. Because we can remap every variable in that term. If we encounter a subterm that has a extended context, for example, the case of lambda abstraction, the variable mapping should be extended accordingly. We can see the term is still called recursively, but the variable mapping function is modified with ext.}
+\note{Then let's define some operations on this syntax. Again, because of intrinsic typing, such operations are scope-safe. For example, a \mi{rename} function says that if there's a mapping from every variable in a context $\varGamma$ to the other context $\varDelta$, we can always find a mapping from every term that is typed in $\varGamma$ to a term typed in $\varDelta$. Because we can remap every variable in that term. If we encounter a subterm that has a extended context, for example, the case of lambda abstraction, the variable mapping should be extended accordingly. We can see that rename is still called recursively, but the variable mapping function is modified with ext.}
 
 \begin{frame}[fragile]{Motivation}
 \emph{Intrinsic typing} is common for $\uplambda$-calculus with De Bruijn indices.
@@ -174,7 +174,7 @@ data _⊢_ : Context → Ty → Set where
 	}
 \end{frame}
 
-\note{Now what if we extend the language? we might want natural number primitives in our language, so we extend the Ty datatype with a new type, we add four typing rules, two of them, zero and suc are for constructing natural numbers, and another two rules for branching and recursion.}
+\note{Now what if we extend the language? we might want natural number primitives in our language, so we extend the Ty datatype with a new type, we add four typing rules, two of them, zero and suc are for constructing natural numbers, and another two rules are for branching and recursion.}
 
 \begin{frame}[fragile]{Motivation}
 		\begin{code}
@@ -190,7 +190,7 @@ rename ρ (μ N)          =  μ (rename (ext ρ) N)
 		\end{code}
 \end{frame}
 
-\note{If we want a rename function for this extended language, we can copy and paste the rename we just defined and add a new clause for each constructor. We can notice here the patterns still follow, a renaming always take a term from a constructor to one with the same constructor, if encounter subterm, call rename recursively, if there's context extension, extend the variable mapping as well. So no matter how many constructors there are we follow the same logic.}
+\note{If we want a rename function for this extended language, we can copy and paste the rename we just defined and add a new clause for each constructor. The patterns still follow, a renaming always take a term from a constructor to one with the same constructor, if encounter subterm, call rename recursively, if there's context extension, extend the variable mapping as well. So no matter how many constructors there are we follow the same logic.}
 
 \begin{frame}[fragile]{Motivation}
 Change/extend the object language even further:
@@ -207,7 +207,7 @@ data _⊢_ : Context → Ty → Set where
 		\end{code}
 \end{frame}
 
-\note{What if we extend the language even further? Here we add even more rules to the language we just defined. syntax sugaring, pairs and projections, etc.}
+\note{What if we extend the language even further? Here we add even more rules. syntax sugaring, pairs and projections, etc.}
 
 \begin{frame}[fragile]{Motivation}
 Redefine/extend syntax operations:
@@ -224,7 +224,7 @@ rename ρ (case× L M)    =  case×  (rename ρ L)
 		\end{code}
 \end{frame}
 
-\note{Then, the \mi{rename} function must be extended everytime we make some changes to the object language. The pattern still applies and it becomes a very repeating work.}
+\note{The \mi{rename} function must be extended as well, so everytime we make some changes to the object language, it becomes a very repeating work.}
 
 \begin{frame}[fragile]{Motivation}
 Other repeating operations:
@@ -240,14 +240,14 @@ print : Γ ⊢ A → String
 		\end{code}
 \end{frame}
 
-\note{There are other repeating operations that should be redefined for every change in the object language, if you have already defined a language with multiple such operations, you probaly would want some kind of generic program that works for every syntax, or a mechanism that generates these operatoins from any given languages.}
+\note{There are other repeating operations that should be redefined for every change in the object language, you probaly would want some kind of generic programs that work for every syntax, or a mechanism that generates these operatoins from any given datatypes of this kind.}
 
 \begin{frame}{Where we are going...}
 \setbeamertemplate{section in toc}[sections numbered] %This is numbering the sections
 \tableofcontents[hideallsubsections] %You can comment this line if you want to show the subsections in the table of contents
 \end{frame}
 
-\note{Now we know the problem we are dealing with. In the next section, I will introduce an existing work for eliminating the repetitions we just mentioned. After that I will illustrate how we develope an alternative approach based on this previous work, by incorporating elaborator reflection. We will make some comparisons along the way, and finally we raise some questions regarding our own work, and hopefully get some feedbacks from you, the programming language researchers.}
+\note{Now we know the problem we are dealing with. In the next section, I will introduce an existing work that eliminates the repetitions we just mentioned. After that I will illustrate how we develope an alternative approach based on this previous work, by incorporating elaborator reflection. We will make some comparisons along the way, and finally we raise some questions regarding our own work, and hopefully get some feedbacks from you.}
 
 \section{Existing Work for Syntax-generic Operations}
 \note{Let's start with the existing work.}
@@ -258,7 +258,7 @@ There are generic libraries for a family/families of syntaxes with binders.
 We improve upon Allais et al.'s approach presented at ICFP '18 (later published in JFP '21).
 \end{frame}
 
-\note{Now we turn our eyes on a work by Allais et al. They have developed a syntax-generic framework with a variety of syntax-generic operations, such as renaming, subsitution, printing and scope checking.}
+\note{There have been some libraries that provide generic operations for the problem we introduced. Those programs are syntax-generic, that's the first part of our title. We focus on one of such works, that is the generic library by Allais et al. They have developed a framework with a variety of syntax-generic operations, such as renaming, subsitution, printing and scope checking.}
 
 \begin{frame}[fragile]{Existing work by Allais et al.}
 	Allais et al.'s \mi{Desc}:
@@ -282,7 +282,7 @@ STLCD = ‵σ ‵STLC λ where
 	\end{code}
 \end{frame}
 
-\note{How have they achieved it? They provide a universe of descriptions called Desc that describes a family of syntaxes. We won't go into its details here, but we can say that every inhabitant in this universe represents a syntax, and simply-typed lambda calculus is one of them. The parameter I in the Desc universe says that a syntax is intrinsically typed by I and has a context of List of I. So simply-typed lambda calculus can be encoded as a description indexed by the Ty datatype we have defined previously, saying that it's a syntax where every term in it has a type represented by Ty, and has a context that is a list of Ty.}
+\note{How do they achieve it? They provide a universe of descriptions called Desc that describes a family of syntaxes. We won't go into its details here, but we can say that every inhabitant in this universe represents a syntax, and simply-typed lambda calculus is one of them. The parameter I in the Desc universe says that a syntax is intrinsically typed by I and has a context of List of I. So simply-typed lambda calculus can be encoded in the universe Desc}
 
 \begin{frame}[fragile]{Existing work by Allais et al.}
 \begin{columns}[T]
@@ -316,7 +316,7 @@ STLC' = Tm STLCD
 $$\mi{\_⊢\_} \cong \mi{STLC'}$$
 \end{frame}
 
-\note{A simply-typed lambda calculus here on the left hand side can be rewritten as a description on the right hand side. In fact, to utilize such generic libraries, programmers are required to encode their syntax in the given description, because syntax-generic operations are defined on these descriptions. To acquire something structurally similar to the native symtax datatype, we can use the \mi{Tm} type constructor, it that takes the fixpoint of the functor of a description. We may prove that a syntax defined as a isolated datatype is isomorphic to the fixpoint of some functor. But to use a generic library one must follow its rules.}
+\note{A simply-typed lambda calculus here on the left hand side has just been rewritten as a description on the right hand side. In fact, to use such generic libraries, programmers must encode their syntax in the given description, because syntax-generic operations are defined on these descriptions. To acquire something structurally similar to the native symtax datatype, we can use the \mi{Tm} type constructor, which takes the fixpoint of the functor of a description. We may prove that a syntax defined as a isolated datatype is isomorphic to the fixpoint of such functor.}
 
 % \begin{frame}[fragile]{Existing work by Allais et al.}
 % 	\begin{code}
@@ -347,7 +347,7 @@ Functions are realized on fixpoints \mi{Tm} via \mi{semantics}.
 \mi{rename} can be applied to fixpoints of any description (e.g. $\mi{Tm}\ \mi{STLCD}$).
 \end{frame}
 
-\note{With a universe they can and have defined generic functions that work for a whole family of syntaxes. For example, they have defined a generic renaming function. A semantics datatype with the upper case S, is a description of a generic function given a syntax description d. You can see Renaming here is generic as it's quantified over d. This semantics with uppercase S is just an encoding, the sementics function with lower case S is used to obtain a generic rename function, we can see for every description d, this function works on Tm d. It can be applied given any d, and of course it can be applied given the description of simply typed lambda calculus.}
+\note{With such a universe, Allais they can and have defined some generic functions that work for a whole family of syntaxes. For example, they have defined a generic renaming function. A semantics datatype with the upper case S is a description of a generic function given a syntax description d. You can see Renaming here is generic as it's quantified over d. The sementics function with lower case S is used to obtain the actual generic rename function, we can see for every description d, this function works on Tm d. It essentially says that there's a rename for every given d, and of course there's a rename for the description of simply-typed lambda calculus.}
 
 % \begin{frame}[fragile]{Motivation cont.}
 % 	Programmers prefer ``natural'' datatype and functions,
@@ -439,7 +439,7 @@ STLC' = Tm STLCD
 \end{columns}
 \end{frame}
 
-\note{We quickly summerize what we think are the reasons these libraries are not widely adopted. First of all is readability. One merit of intrinsic typing is that types of constructors closely resemble typing rules, and typing rules are less obvious for syntaxes defined in generic universes.}
+\note{We quickly summerize what we think are the reasons these libraries are not widely adopted. First of all is readability. One good thing about of intrinsic typing is that types of constructors closely resemble typing rules, and typing rules are less obvious for syntaxes defined in generic universes.}
 
 \begin{frame}[fragile]{Problems with Syntax Universes: Burden on Programmers}
 	\begin{code}
@@ -462,39 +462,39 @@ STLCD' = ???
 	\end{code}
 \end{frame}
 
-\note{And they need to learn a new generic construction or representation everytime they want some features only exist in another generic library, even though they are working on the same syntax, it must be redefined. This leads us to te third problem, interoperability. It would be hard to use two or more generic libraries at once.}
+\note{And they need to learn a new generic representation everytime they want some features that only exist in another generic library, the syntax they are working on must be redefined. This leads us to te third problem, interoperability. It would be hard to use two or more generic libraries at once.}
 
-\begin{frame}[fragile]{Problems with Syntax Universes: Interoperability}
-\begin{columns}[T]
-	\begin{column}{0.4\textwidth}
-		\begin{code}
-f : Γ ⊢ A → ℕ
-f t = {! | !}
-		\end{code}
-Ctrl + C $\downarrow$
-	\pause
-		\begin{code}
-f : Γ ⊢ A → ℕ
-f (‵ x)    =  {!    !}
-f (ƛ N)    =  {!    !}
-f (L · M)  =  {! |  !}
-		\end{code}
-	\end{column}
-	\pause
-	\begin{column}{0.4\textwidth}
-	\begin{code}
-f : Tm d τ Γ → ℕ
-f t = {! | !}
-	\end{code}
-Ctrl + C $\downarrow$
-	\begin{code}
-???
-	\end{code}
-	\end{column}
-\end{columns}
-\end{frame}
-
-\note{The interoperability with existing tools also suffer, for example, because every typing rule corresponds to one constructor, we can utilize the case-spliting mechanism provided by Agda's editor mode, by placing te cursor in th hole of f, and press Ctrl and C in the Emacs or VS Code editor, we can easily see how many clauses we should define for a function that takes a natural term. We can't benefit from these tools or existing IDE supports when using generic universes, case spliting on Tm would work, but it will look like a mess.}
+% \begin{frame}[fragile]{Problems with Syntax Universes: Interoperability}
+% \begin{columns}[T]
+% 	\begin{column}{0.4\textwidth}
+% 		\begin{code}
+% f : Γ ⊢ A → ℕ
+% f t = {! | !}
+% 		\end{code}
+% Ctrl + C $\downarrow$
+% 	\pause
+% 		\begin{code}
+% f : Γ ⊢ A → ℕ
+% f (‵ x)    =  {!    !}
+% f (ƛ N)    =  {!    !}
+% f (L · M)  =  {! |  !}
+% 		\end{code}
+% 	\end{column}
+% 	\pause
+% 	\begin{column}{0.4\textwidth}
+% 	\begin{code}
+% f : Tm d τ Γ → ℕ
+% f t = {! | !}
+% 	\end{code}
+% Ctrl + C $\downarrow$
+% 	\begin{code}
+% ???
+% 	\end{code}
+% 	\end{column}
+% \end{columns}
+% \end{frame}
+% 
+% \note{The interoperability problem also exists with existing tools, for example, because every typing rule corresponds to one constructor, we can utilize the case-spliting mechanism provided by Agda's editor mode, by placing te cursor in th hole of f, and press Ctrl and C in the Emacs or VS Code editor, we can easily see how many clauses we should define for a function that takes a natural term. We can't benefit from these tools or existing IDE supports when using generic universes, case spliting on Tm would work, but it will look like a mess.}
 
 \section{Elaborator Reflection to the Rescue}
 
@@ -509,7 +509,7 @@ Ctrl + C $\downarrow$
 	Syntax-generic operations \emph{are} Datatype-generic programs with constraints.
 \end{frame}
 
-\note{I would like to shamelessly promote the other work we are presenting at ICFP, Datatype-Generic Programming Meets Elaborator Reflection. Josh will present it on Tuesday. We have demostrated in that work on how to mix elaborator reflection with datatype-generic programming, such we can define programs that work for a family of datatypes, while using elaborator reflection to reify such programs as natural function definitions defined on native datatypes. What does this have to do with syntax-generic libraries that we spent so much time intorducing? It turns out, syntax-generic programs can sometimes be seem as a subset of datatype-generic programs. In this case, we can constrain a subset of all datatypes such that datatypes in this subset are also describable by Allais et al.'s library.}
+\note{I would like to shamelessly promote the other work we are presenting at ICFP, Datatype-Generic Programming Meets Elaborator Reflection. My advisor Josh will present it on Tuesday. We have demostrated in that work that we can define programs on a family of datatypes with our program description, while using elaborator reflection to reify such programs as natural function definitions defined on native datatypes. What does this have to do with syntax-generic libraries that we spent so much time intorducing? It turns out, syntax-generic programs sometimes datatype-generic programs. We can constrain a subset of all datatypes such that datatypes in this subset are also describable bya generic universe, in this case Allais their library.}
 
 \begin{frame}[fragile]{The process}
 	\begin{enumerate}
@@ -523,7 +523,7 @@ Ctrl + C $\downarrow$
 	\end{enumerate}
 \end{frame}
 
-\note{Now let us skip the introduction of datatype-generic programming and metaprograms. To get the whole picture, let's do a rundown of our alternative process for a programmer to invoke generic programs. Firstly they define a native datatype that we know to be a syntax, instead of relying on any generic description. Then by metaprograms in our datatype-generic library, they get the datatype description of that datatype. Then the programmer can choose a generic program to reify. This generic program is pre-defined by the ``geneic library programmers''. Lastly, another metaprogram takes $D$ and $P$, and gives the programmer a native, reifed funtion definition that works on $S$, as if everything is defined by hands.}
+\note{Now let us skip the introduction of datatype-generic programming and metaprograms. To get the whole picture, let's do a rundown of our alternative process for a programmer to invoke generic programs. Firstly they define a native datatype T that we know to be a syntax, instead of relying on any generic description. Then by metaprograms in our datatype-generic library, they get the datatype description D of T. Then the programmer can choose a generic program P to reify. This generic program is pre-defined by the geneic library. Lastly, another metaprogram takes $D$ and $P$, and gives the programmer a native, reifed funtion definition that works on $S$, as if everything is defined by hands.}
 
 \begin{frame}[fragile]{The process}
 	\begin{enumerate}
@@ -535,7 +535,7 @@ Ctrl + C $\downarrow$
 	\end{enumerate}
 \end{frame}
 
-\note{We know that the description $D$, generated from a syntax datatype is a syntax, but how does the generic library know? To pre-define a datatype-generic program that work specifically on a family of syntax, we must also pre-define a predicate that says a datatype is indeed a member of the syntax family. So the process we just mentioned is not suffient. The ``geneic library'' should also provide predicates that constrain general datatypes, saying what generic programs exist for what kinds of datatypes, in this case the syntaxes. and the programmer must provide a proof of this predicate when choosing a generic program to reify. So the process we just showed actually requires an extra step, that is the programmer must provide proofs of the datatype $T$ being a syntax.}
+\note{But this process is actually not sufficient, how does the generic library know S is a syntax? To pre-define a datatype-generic program that work specifically on a family of syntax, we must also pre-define a predicate that says a datatype is indeed a syntax. So the geneic library should also provide predicates that constrain general datatypes, saying they are syntaxes. And the programmer must provide a proof of this predicate when choosing a generic program to reify. So the process we just showed actually requires an extra step, that is the programmer providing a proof of the datatype $T$ being a syntax.}
 
 \begin{frame}[fragile]{Flow Chart}
 \includegraphics[width=\columnwidth]{Diagram1.pdf}
@@ -589,7 +589,7 @@ In this work:
 	\end{itemize}
 \end{frame}
 
-\note{These are our contributions. These four are already provided in our other work that we have mentioned. DataD is datatype description, FoldP is description of datatype-generic programs which are folds, genDataD is the metaprogram for reading datatype description and defineFold is for generating native function from descriptions.  In this work, we introduce a framework that ports syntax-generic libraries to more datatype-generic ones, by defining the predicate Syntax and some translation functions built around this predicate.}
+\note{The datatype and program descriptions are provided by our other work we mentioned, so are the metaprograms. In this work we provide the Syntax predicate and the translations built arount it.}
 
 
 \begin{frame}[fragile]{The \mi{Syntax} Predicate}
@@ -646,7 +646,7 @@ SyntaxPCF = _
 \end{columns}
 \end{frame}
 
-\note{But we can shortly emphasize on something that concerned us when developing this framework, that is the complexity of the Syntax proof. If this proof is too complex, probaly no one would want to use it. Fortunately, it turns out proving something to be a syntax is actually pretty straightforward. Let's see an example. Suppose we define a language called PCF, which has five constructors. for this PCF datatype to be a syntax, a lot of things has to be considered, like the datatype's universe level, numbers of parameters and indices, and constraints on each field of each constructor. For example, in this case the parameters must be empty and there must be exactly two indices, a type and a list of type. Fortunately, these constraints are mostly equality proofs, and once the programmer provides a datatype that satisfies these conditions, these can be proved by simply using the refl constructor. Proofs of different datatypes being syntaxes look pretty much the same and there are some simple rules to follow, so it is possible to write yet another metaprogram for generating such proofs. Which is a future work we haven't done yet.}
+\note{We were worried that the Syntax proof might be too complicated, because if it's too complicated it would not save any efforts and nobody would want to use it. Fortunately in this case it's pretty straightforward. Suppose we define a language PCF, which has five constructors. For this PCF datatype to be a syntax, a lot of things has to be considered, like the datatype's universe level, numbers of parameters and indices, and constraints on each field of each constructor. In this case the parameters must be empty and there must be exactly two indices, a type and a list of type. It turns out most of these are equality proofs, and if the datatype truely is a syntax, these can be proved by simply using the refl constructor. Proofs of any datatypes being syntaxes look pretty much the same, so it is possible to write yet another metaprogram for generating such proofs. Which is a future work we haven't done yet.}
 
 % \begin{frame}[fragile]{Translation from Semantics to natural looking functions}
 % \end{frame}
@@ -664,7 +664,7 @@ SyntaxPCF = _
 		Do we really need syntax-generic libraries?
 \end{frame}
 
-\note{Finally, let's talk about the cons. More issues will arise if we start porting more syntax-generic libraries other than Allais et al.'s. First of all we are still limited by a universe, that is the Agda inductive datatype universe. What is expressible in other universes might not find their conterparts as native datatypes. Then for more complicated universes, the Syntax proofs could be more complicated and not so straightforward.  Feel free to share your thoughts on this framework, does it look promising or are there critical issues making it undesirable? Please let us know.}
+\note{As you can see, our work has a lot to be done. Since we are running out of time, I would like to address one issue that's probably the elephant in the room. What if people actually don't want syntax-generic operations at all? Maybe they only define a language once in a while, and it's not worth the time looking up what libraries they can use. Or, since researchers define languages with new features all the time, maybe it's common for them to come up something no generic universes can cover. Our framework could still be help in that case, maybe our metaprograms can analyse the constructors in a datatype and determine which of them fit in a universe, and generate functions that are partially defined, then leave the uncertain parts to the programmer. So what do you think about it? Please share with us your conerns or what you think this framework can be going. Thank you all for listening.}
 
 \end{document}
 
