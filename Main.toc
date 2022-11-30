@@ -1,0 +1,8 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\babel@toc {english}{}
+\defcounter {refsection}{0}\relax 
+\beamer@sectionintoc {1}{Existing Work for Syntax-generic Operations}{10}{0}{1}
+\defcounter {refsection}{0}\relax 
+\beamer@sectionintoc {2}{Elaborator Reflection to the Rescue}{21}{0}{2}
+\defcounter {refsection}{0}\relax 
+\beamer@sectionintoc {3}{Discussion}{45}{0}{3}

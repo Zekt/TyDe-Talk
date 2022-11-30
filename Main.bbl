@@ -1,0 +1,160 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.1 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global}
+    \entry{Ahrens-typed-abstract-syntax}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=5e0b29e8a40c8ddb6f6748f3a24cf951}{%
+           family={Ahrens},
+           familyi={A\bibinitperiod},
+           given={Benedikt},
+           giveni={B\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=d53a87110221bde5a1a5afda9114a306}{%
+           family={Matthes},
+           familyi={M\bibinitperiod},
+           given={Ralph},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=324585bd6e55e1a2fb4eaa984c14da0b}{%
+           family={Mörtberg},
+           familyi={M\bibinitperiod},
+           given={Anders},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {ACM}%
+      }
+      \strng{namehash}{3a8066b0ddb5676c51f052fd4791d209}
+      \strng{fullhash}{3a8066b0ddb5676c51f052fd4791d209}
+      \strng{bibnamehash}{3a8066b0ddb5676c51f052fd4791d209}
+      \strng{authorbibnamehash}{3a8066b0ddb5676c51f052fd4791d209}
+      \strng{authornamehash}{3a8066b0ddb5676c51f052fd4791d209}
+      \strng{authorfullhash}{3a8066b0ddb5676c51f052fd4791d209}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{In previous work (``From signatures to monads in UniMath''),we described a category-theoretic construction of abstract syntax from a signature, mechanized in the UniMath library based on the \texttt{Coq} proof assistant.\par In the present work, we describe what was necessary to generalize that work to account for simply-typed languages. First, some definitions had to be generalized to account for the natural appearance of non-endofunctors in the simply-typed case. As it turns out, in many cases our mechanized results carried over to the generalized definitions without any code change. Second, an existing mechanized library on $\omega$-cocontinuous functors had to be extended by constructions and theorems necessary for constructing multi-sorted syntax. Third, the theoretical framework for the semantical signatures had to be generalized from a monoidal to a bicategorical setting, again to account for non-endofunctors arising in the typed case. This uses actions of endofunctors on functors with given source, and the corresponding notion of strong functors between actions, all formalized in UniMath using a recently developed library of bicategory theory. We explain what needed to be done to plug all of these ingredients together, modularly.\par The main result of our work is a general construction that, when fed with a signature for a simply-typed language, returns an implementation of that language together with suitable boilerplate code, in particular, a certified monadic substitution operation.}
+      \field{booktitle}{International Conference on Certified Programs and Proofs (CPP)}
+      \field{title}{Implementing a Category-Theoretic Framework for Typed Abstract Syntax}
+      \field{year}{2022}
+      \field{pages}{307\bibrangedash 323}
+      \range{pages}{17}
+      \verb{doi}
+      \verb 10.1145/3497775.3503678
+      \endverb
+    \endentry
+    \entry{Allais-generic-syntax}{article}{}
+      \name{author}{5}{}{%
+        {{un=0,uniquepart=base,hash=d9aac22ea7eaa6bfe4aebb0a626fe118}{%
+           family={Allais},
+           familyi={A\bibinitperiod},
+           given={Guillaume},
+           giveni={G\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b5507ca1177b01ddc89cb764e5fbf287}{%
+           family={Atkey},
+           familyi={A\bibinitperiod},
+           given={Robert},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=ccdd3669aff26ae10f05232050c4c807}{%
+           family={Chapman},
+           familyi={C\bibinitperiod},
+           given={James},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=2c2c2406f3f7d52d846f02ca883d9b3d}{%
+           family={McBride},
+           familyi={M\bibinitperiod},
+           given={Conor},
+           giveni={C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=24d5d8237bc34516929c905f31aab05c}{%
+           family={McKinna},
+           familyi={M\bibinitperiod},
+           given={James},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{610d48e83b8956cdb1b5c5a5ce3f9bbc}
+      \strng{fullhash}{9a6f76621d79a63ce5586fb154a5c674}
+      \strng{bibnamehash}{610d48e83b8956cdb1b5c5a5ce3f9bbc}
+      \strng{authorbibnamehash}{610d48e83b8956cdb1b5c5a5ce3f9bbc}
+      \strng{authornamehash}{610d48e83b8956cdb1b5c5a5ce3f9bbc}
+      \strng{authorfullhash}{9a6f76621d79a63ce5586fb154a5c674}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{The syntax of almost every programming language includes a notion of binder and corresponding bound occurrences, along with the accompanying notions of $\alpha$-equivalence, capture-avoiding substitution, typing contexts, runtime environments, and so on. In the past, implementing and reasoning about programming languages required careful handling to maintain the correct behaviour of bound variables. Modern programming languages include features that enable constraints like scope safety to be expressed in types. Nevertheless, the programmer is still forced to write the same boilerplate over again for each new implementation of a scope-safe operation (e.g., renaming, substitution, desugaring, printing), and then again for correctness proofs. We present an expressive universe of syntaxes with binding and demonstrate how to (1) implement scope-safe traversals once and for all by generic programming; and (2) how to derive properties of these traversals by generic proving. Our universe description, generic traversals and proofs, and our examples have all been formalised in Agda and are available in the accompanying material available online at https://github.com/gallais/generic-syntax.}
+      \field{journaltitle}{Journal of Functional Programming}
+      \field{title}{A Type- and Scope-Safe Universe of Syntaxes with Binding: Their Semantics and Proofs}
+      \field{volume}{31}
+      \field{year}{2021}
+      \field{pages}{e22:1\bibrangedash 51}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1017/S0956796820000076
+      \endverb
+    \endentry
+    \entry{Fiore-SOAS-Agda}{article}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=043d5c96c5db9d9fc4388fe324b620b4}{%
+           family={Fiore},
+           familyi={F\bibinitperiod},
+           given={Marcelo},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b9d1c5a51ee91f58d15648fc6153b0ac}{%
+           family={Szamozvancev},
+           familyi={S\bibinitperiod},
+           given={Dmitrij},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{42acf65df6a6d990838e95d156bdcf50}
+      \strng{fullhash}{42acf65df6a6d990838e95d156bdcf50}
+      \strng{bibnamehash}{42acf65df6a6d990838e95d156bdcf50}
+      \strng{authorbibnamehash}{42acf65df6a6d990838e95d156bdcf50}
+      \strng{authornamehash}{42acf65df6a6d990838e95d156bdcf50}
+      \strng{authorfullhash}{42acf65df6a6d990838e95d156bdcf50}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Despite extensive research both on the theoretical and practical fronts, formalising, reasoning about, and implementing languages with variable binding is still a daunting endeavour -- repetitive boilerplate and the overly complicated metatheory of capture-avoiding substitution often get in the way of progressing on to the actually interesting properties of a language. Existing developments offer some relief, however at the expense of inconvenient and error-prone term encodings and lack of formal foundations.\par We present a mathematically-inspired language-formalisation framework implemented in Agda. The system translates the description of a syntax signature with variable-binding operators into an intrinsically-encoded, inductive data type equipped with syntactic operations such as weakening and substitution, along with their correctness properties. The generated metatheory further incorporates metavariables and their associated operation of metasubstitution, which enables second-order equational/rewriting reasoning. The underlying mathematical foundation of the framework -- initial algebra semantics -- derives compositional interpretations of languages into their models satisfying the semantic substitution lemma by construction.}
+      \field{journaltitle}{Proceedings of the ACM on Programming Languages}
+      \field{number}{POPL}
+      \field{title}{Formal Metatheory of Second-Order Abstract Syntax}
+      \field{volume}{6}
+      \field{year}{2022}
+      \field{pages}{53:1\bibrangedash 29}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1145/3498715
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
